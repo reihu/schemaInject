@@ -37,10 +37,16 @@ schemaInject will then do the following steps:
      * deletes all unknown indices (as they don't affect the data itself)
      You can nevertheless set the `delete` attribute to true for fields and tables you want to delete explicitly.
 
-schemaInject will...
- * not do anything unless it can read all of the specified schema files
- * also refuse to work if it found no tables in the schema.xml
- * 
+schemaInject...
+ * won't do anything unless it can read all of the specified schema files
+ * also refuses to work if it found no tables in the schema.xml
+ * only acts on tables that have the given `prefix`. As this prefix defaults
+   to `""`, all tables will be used unless a prefix is specified explicitly
+ * won't delete any data unless you explicitly set `nodelete` to false
+ * can be used with ORMs like jOOQ that don't modify the database schema
+ * should be 
+ * likes SQL
+ * needs a better name...
 
 
 Schema file/folder:
@@ -117,3 +123,8 @@ Schema file/folder:
 Example code
 ------------
 _to be specified_
+
+License
+-------
+schemaInject is released under the terms of the Apache License 2 which can be found at:
+http://www.apache.org/licenses/LICENSE-2.0.html
