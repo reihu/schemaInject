@@ -47,6 +47,7 @@ Schema file/folder:
 -------------------
 
  * __A single file__
+
 	Example:
 
 		<schema revision="1" nodelete="true" metaTable="_schemaInject" prefix="demo-" >
@@ -76,6 +77,7 @@ Schema file/folder:
    The schema contains the following items
 
    * The `<schema>` element is the root element of the document.
+
      It may contain the following attributes
      * `metaTable` to indicate the name of the schemaInject meta table
        (defaults to `_schemaInject`)
@@ -88,6 +90,7 @@ Schema file/folder:
      * `comment`: optional comment
      * `ignore`: set this to true to completely ignore a table (use this for external tables)
      * `delete`: completely remove the table and its content
+
      It can contain `<field>`, `<pkey>`, `<fkey>` and `<unique>` elements.
    * The `<field>` element as the following attributes:
      * `name` (required): the name of the field
@@ -95,14 +98,20 @@ Schema file/folder:
      * `null` (default: `false`): Specifies wheter the field accepts NULL values
      * `ignore` (default: `false`): Completely ignores the field
      * `delete` (default: `false`): Deletes the field
-   * The `<pkey>` element specifies the table's primary key. It is either empty and has one `field` attribute
-     or contains several `<field>fieldName</field>` subelements (for pkeys over more than one field) 
-   * The `<unique>` element creates a unique constraint. It is either empty and has one `field` attribute
-     or contains several `<field>fieldName</field>` subelements (for unique indexes over more than one field)
-   * The `<fkey>` element always has a `refTable` attribute and either a `field` and `refField` for single-field fkeys
-     or several `<field name="localFieldName" refField="remoteFieldName" />` subelements.
+   * The `<pkey>` element specifies the table's primary key.
+
+     It is either empty and has one `field` attribute or contains several
+     `<field>fieldName</field>` subelements (for pkeys over more than one field)
+   * The `<unique>` element creates a unique constraint.
+     It is either empty and has one `field` attribute or contains several
+     `<field>fieldName</field>` subelements (for unique indexes over more than
+     one field)
+   * The `<fkey>` element always has a `refTable` attribute and either a
+     `field` and `refField` for single-field fkeys or several
+     `<field name="localFieldName" refField="remoteFieldName" />` subelements.
    * TODO: add support for plain indices
  * __A schema folder__
+
    _to be specified..._
 
 Example code
