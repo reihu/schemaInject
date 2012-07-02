@@ -47,33 +47,32 @@ Schema file/folder:
 -------------------
 
  * __A single file__
+	Example:
 
-   Example:
+		<schema revision="1" nodelete="true" metaTable="_schemaInject" prefix="demo-" >
+			<!-- User table -->
+			<table name="user">
+				<field name="uid" type="integer" null="false" />
+				<field name="login" type="varchar[50]" null="false" />
+				<field name="password" type="char[32]" null="false">
+					<oldname>pwd</oldname>
+				</field>
 
-   	<schema revision="1" nodelete="true" metaTable="_schemaInject" prefix="demo-" >
-   		<!-- User table -->
-   		<table name="user">
-   			<field name="uid" type="integer" null="false" />
-   			<field name="login" type="varchar[50]" null="false" />
-   			<field name="password" type="char[32]" null="false">
-   				<oldname>pwd</oldname>
-   			</field>
-   
-   			<pkey field="uid" />
-   			<sequence field="uid" />
-   		</table>
-   		<table name="session" comment="Session table">
-   			<field name="sid" type="char[32]" null="false" />
-   			<field name="uid" type="integer" null="false" />
-   			<field name="lastActive" type="timestamp" null="false" default="%NOW%" />
-   			<field name="deletedField" delete="true" />
-   
-   			<pkey field="sid" type="" />
-   			<fkey field="uid" refTable="user" refField="uid" />
-   		</table>
-   		<table name="foo" ignore="true" />
-   		<table name="deleteMe" delete="true" />
-   	</schema>
+				<pkey field="uid" />
+				<sequence field="uid" />
+			</table>
+			<table name="session" comment="Session table">
+				<field name="sid" type="char[32]" null="false" />
+				<field name="uid" type="integer" null="false" />
+				<field name="lastActive" type="timestamp" null="false" default="%NOW%" />
+				<field name="deletedField" delete="true" />
+
+				<pkey field="sid" type="" />
+				<fkey field="uid" refTable="user" refField="uid" />
+			</table>
+			<table name="foo" ignore="true" />
+			<table name="deleteMe" delete="true" />
+		</schema>
    The schema contains the following items
 
    * The `<schema>` element is the root element of the document.
