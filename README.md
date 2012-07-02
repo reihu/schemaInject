@@ -46,7 +46,7 @@ schemaInject...
  * can be used with ORMs like jOOQ that don't modify the database schema
  * should be 
  * likes SQL
- * needs a better name...
+ * needs a better name. Suggest one at https://github.com/reihu/schemaInject/issues/1
 
 
 Schema file/folder:
