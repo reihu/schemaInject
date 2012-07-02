@@ -49,6 +49,7 @@ Schema file/folder:
  * __A single file__
 
    Example:
+
    	<schema revision="1" nodelete="true" metaTable="_schemaInject" prefix="demo-" >
    		<!-- User table -->
    		<table name="user">
