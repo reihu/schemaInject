@@ -40,46 +40,53 @@ schemaInject will then do the following steps:
 schemaInject...
  * won't do anything unless it can read all of the specified schema files
  * also refuses to work if it found no tables in the schema.xml
+ * will check if the schema.xml is valid before it does anything
+ * will encapsulate the whole schema update into a transaction for database engines that support schema transactions (e.g. PostgreSQL)
  * only acts on tables that have the given `prefix`. As this prefix defaults
    to `""`, all tables will be used unless a prefix is specified explicitly
- * won't delete any data unless you explicitly set `nodelete` to false
+ * won't delete any data unless you explicitly set `nodelete` to false.
+ * creates sequences implicitly. However there are ways to create/delete them
+   explicitly.
+   They are deleted implicitly only when `nodelete="false"` and they aren't referenced anymore.
+   You can explicitly delete one by specifying `delete="true"` in its explicit
+   `<sequence>` declaration.
+   But keep in mind that if the sequence is in use when you want to delete it,
+   schemaInject will refuse to work as the schema declaration will be
+   considered invalid.
  * can be used with ORMs like jOOQ that don't modify the database schema
- * should be 
  * likes SQL
  * needs a better name. Suggest one at https://github.com/reihu/schemaInject/issues/1
 
 
-Schema file/folder:
--------------------
+Example schema
+--------------
 
- * __A single file__
+	<schema revision="1" nodelete="true" metaTable="_schemaInject" prefix="demo-" >
+		<!-- Sequences come first -->
+		<sequence name="seq_foo" start="10" interval="1" delete="false" />
+		<!-- Then the tables -->
+		<table name="user">
+			<field name="uid" type="integer" sequence="seq_user_uid" null="false" />
+			<field name="login" type="varchar[50]" null="false" />
+			<field name="password" type="char[32]" null="false">
+				<oldname>pwd</oldname>
+			</field>
 
-	Example:
+			<pkey field="uid" />
+		</table>
+		<table name="session" comment="Session table">
+			<field name="sid" type="char[32]" null="false" />
+			<field name="uid" type="integer" null="false" />
+			<field name="lastActive" type="timestamp" null="false" default="%NOW%" />
+			<field name="deletedField" delete="true" />
 
-		<schema revision="1" nodelete="true" metaTable="_schemaInject" prefix="demo-" >
-			<!-- User table -->
-			<table name="user">
-				<field name="uid" type="integer" null="false" />
-				<field name="login" type="varchar[50]" null="false" />
-				<field name="password" type="char[32]" null="false">
-					<oldname>pwd</oldname>
-				</field>
+			<pkey field="sid" type="" />
+			<fkey field="uid" refTable="user" refField="uid" />
+		</table>
+		<table name="foo" ignore="true" />
+		<table name="deleteMe" delete="true" />
+	</schema>
 
-				<pkey field="uid" />
-				<sequence field="uid" />
-			</table>
-			<table name="session" comment="Session table">
-				<field name="sid" type="char[32]" null="false" />
-				<field name="uid" type="integer" null="false" />
-				<field name="lastActive" type="timestamp" null="false" default="%NOW%" />
-				<field name="deletedField" delete="true" />
-
-				<pkey field="sid" type="" />
-				<fkey field="uid" refTable="user" refField="uid" />
-			</table>
-			<table name="foo" ignore="true" />
-			<table name="deleteMe" delete="true" />
-		</schema>
    The schema contains the following items
 
    * The `<schema>` element is the root element of the document.
@@ -89,8 +96,16 @@ Schema file/folder:
        (defaults to `_schemaInject`)
      * `nodelete` specifies whether schemaInject is allowed to delete data.
      * `revision` to specify the revision of the current schema.
-     It contains a `<table>` element for each database table that should be created
      * `prefix` (default: "") to specify a prefix for all managed tables
+
+     It contains a `<table>` element for each database table that should be
+     created and may contain several explicit sequence declarations
+   * The `<sequence>` element is used to explicitly specify a sequence.
+     It supports the following attributes:
+     * `name` (required): Sequence name
+     * `start` (optional): starting value (if supported by the database)
+     * `interval` (optional): stepping interval (if supported by the database)
+     * `delete` (optional): set this to true to explicitly delete a sequence
    * The `<table>` element has the following attributes:
      * `name` (required): The name of the table
      * `comment`: optional comment
@@ -102,6 +117,7 @@ Schema file/folder:
      * `name` (required): the name of the field
      * `type` (required if none of `ignore` and `delete` are specified): field type
      * `null` (default: `false`): Specifies wheter the field accepts NULL values
+     * `sequence` (default: ""): Use a sequence on this field. Sequences are created implicitly
      * `ignore` (default: `false`): Completely ignores the field
      * `delete` (default: `false`): Deletes the field
    * The `<pkey>` element specifies the table's primary key.
@@ -115,6 +131,14 @@ Schema file/folder:
    * The `<fkey>` element always has a `refTable` attribute and either a
      `field` and `refField` for single-field fkeys or several
      `<field name="localFieldName" refField="remoteFieldName" />` subelements.
+
+     It may contain the following additional attributes:
+     * `deferred` (default: "false"), other values: "deferred", "immediate" )
+       can be used for deferred foreign keys (that will be checked at the end
+       of a transaction). The possible values are:
+       * `false` the foreign key is NOT deferrable
+       * `deferred` deferrable and initially deferred
+       * `immediate` deferrable but initially immediate
    * TODO: add support for plain indices
  * __A schema folder__
 
