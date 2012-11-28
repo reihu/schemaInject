@@ -1,0 +1,13 @@
+<schema revision="3" metaTable="_meta" prefix="lolcat_">
+	<!-- sequences come first -->
+	<sequence name="seq_foo" start="10" interval="3" />
+
+	<table name="cat">
+		<field name="cat_id" type="integer" sequence="seq_foo" nullable="false" />
+		<field name="name" type="varchar(50)" nullable="false" />
+		<field name="gender" type="char(1)" nullable="false" />
+		<field name="mother_id" type="integer" nullable="true" />
+		<field name="father_id" type="integer" nullable="true" />
+		<unique field="name" />
+	</table>
+</schema>
