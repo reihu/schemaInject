@@ -88,6 +88,20 @@ public class Schema {
 	}
 	
 	/**
+	 * Returns a table with a specific name
+	 * @param name Table name
+	 * @return Table or null if not found
+	 */
+	public Table getTable(String name) {
+		for (Table table: getTables()) {
+			if (table.getName().equals(name)) {
+				return table;
+			}
+		}
+		return null;
+	}
+	
+	/**
 	 * Add a table to the schema
 	 * @param t Table to add
 	 * TODO check whether we need this outside of test use cases
