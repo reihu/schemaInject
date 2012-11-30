@@ -22,14 +22,34 @@ public class Table {
 	/**
 	 * List of fields in this table
 	 */
-	@XStreamImplicit
+	@XStreamImplicit(itemFieldName="field")
 	private List<Field> fields = new ArrayList<Field>();
+
+	/**
+	 * Primary key
+	 */
+	@XStreamAlias("pkey")
+	private PrimaryKey primaryKey = null;
+
+	/**
+	 * Foreign key constraints
+	 */
+	@XStreamImplicit(itemFieldName="fkey")
+	private List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
 	
 	/**
 	 * List of Unique constraints
 	 */
-	@XStreamImplicit
+	@XStreamImplicit(itemFieldName="unique")
 	private List<Unique> uniques = new ArrayList<Unique>();
+
+	public Table(String name, List<Field> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
+		this.name = name;
+		this.fields = fields;
+		this.primaryKey = pkey;
+		this.foreignKeys = fkeys;
+		this.uniques = uniques;
+	}
 	
 	/**
 	 * Return the table name
@@ -45,6 +65,22 @@ public class Table {
 	 */
 	public List<Field> getFields() {
 		return fields;
+	}
+	
+	/**
+	 * Returns the primary key definition (if any)
+	 * @return PrimaryKey or null
+	 */
+	public PrimaryKey getPrimaryKey() {
+		return primaryKey;
+	}
+	
+	/**
+	 * Returns a list of foreign keys defined in this table
+	 * @return Foreign key constraints
+	 */
+	public List<ForeignKey> getForeignKeys() {
+		return foreignKeys;
 	}
 	
 	/**
