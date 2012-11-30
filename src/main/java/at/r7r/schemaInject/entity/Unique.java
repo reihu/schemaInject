@@ -1,6 +1,5 @@
 package at.r7r.schemaInject.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
@@ -17,19 +16,10 @@ public class Unique extends Constraint {
 	private String oneField = null;
 	
 	public int getFieldCount() {
-		int rc = 0;
-		if (oneField != null) rc = 1;
-		if (fields != null) rc = fields.size();
-		return rc;
+		return getFieldCount(oneField, fields);
 	}
 	
 	public List<String> getFields() {
-		List<String> rc;
-		if (fields != null) rc = fields;
-		else {
-			rc = new ArrayList<String>();
-			rc.add(oneField);
-		}
-		return rc;
+		return getFields(oneField, fields);
 	}
 }
