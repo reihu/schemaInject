@@ -21,6 +21,13 @@ public class Field {
 	@XStreamAlias("default")
 	private String defaultValue;
 	
+	public Field(String name, String type, boolean nullable, String defaultValue) {
+		this.name = name;
+		this.type = type;
+		this.nullable = nullable;
+		this.defaultValue = defaultValue;
+	}
+	
 	public String getName() {
 		return name;
 	}
