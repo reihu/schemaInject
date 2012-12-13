@@ -29,13 +29,6 @@ public class Schema {
 	private String metaTable = "_schemaInject";
 
 	/**
-	 * Table prefix. If you set this to a non-empty string, every table will be
-	 * created using this value as prefix (e.g. "foobar_")
-	 */
-	@XStreamAsAttribute
-	private String prefix = null;
-
-	/**
 	 * Contains all the explicitly defined sequences
 	 */
 	@XStreamImplicit(itemFieldName="sequence")
@@ -81,14 +74,6 @@ public class Schema {
 	public String getMetaTable() {
 		return metaTable;
 	}
-	
-	/**
-	 * Returns the prefix for all the tables that will be managed
-	 * @return Prefix (default: null)
-	 */
-	public String getTablePrefix() {
-		return prefix;
-	}
 
 	/**
 	 * Returns all sequences defined in this schema
@@ -127,5 +112,9 @@ public class Schema {
 	 */
 	public void addTable(Table t) {
 		tables.add(t);
+	}
+	
+	public void setRevision(int rev) {
+		this.revision = rev;
 	}
 }
