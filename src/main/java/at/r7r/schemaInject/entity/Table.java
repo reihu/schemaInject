@@ -100,6 +100,7 @@ public class Table {
 	 * @return Foreign key constraints
 	 */
 	public List<ForeignKey> getForeignKeys() {
+		if (foreignKeys == null) foreignKeys = new ArrayList<ForeignKey>();
 		return foreignKeys;
 	}
 	
