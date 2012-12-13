@@ -8,6 +8,21 @@
 		<field name="gender" type="char(1)" nullable="false" />
 		<field name="mother_id" type="integer" nullable="true" />
 		<field name="father_id" type="integer" nullable="true" />
+
+		<pkey field="cat_id" />
 		<unique field="name" />
+		<fkey from="mother_id" toTable="cat" toField="cat_id" />
+		<fkey toTable="cat">
+			<from>father_id</from>
+			<to>cat_id</to>
+		</fkey>
+	</table>
+	<table name="mouse">
+		<field name="mouse_id" type="integer" auto-increment="true" nullable="false" />
+		<field name="name" type="varchar(50)" nullable="false" />
+		<field name="eatenBy" type="integer" nullable="true" />
+
+		<pkey field="mouse_id" />
+		<fkey from="eatenBy" toTable="cat" toField="cat_id" />
 	</table>
 </schema>
