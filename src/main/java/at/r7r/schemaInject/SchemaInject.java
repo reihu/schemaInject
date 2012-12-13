@@ -1,32 +1,75 @@
 package at.r7r.schemaInject;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedList;
+import java.util.List;
+
+import com.thoughtworks.xstream.XStream;
 
 import at.r7r.schemaInject.dao.DatabaseHelper;
+import at.r7r.schemaInject.dao.SqlBuilder;
 import at.r7r.schemaInject.entity.Field;
+import at.r7r.schemaInject.entity.PrimaryKey;
 import at.r7r.schemaInject.entity.Schema;
 import at.r7r.schemaInject.entity.Table;
 
 public class SchemaInject {
-	private void checkField(DatabaseHelper db, Field field) {
+	private static Table createMetaTable(String tableName) {
+		List<Field> fields = new ArrayList<Field>();
+		List<String> pkeyFields = new LinkedList<String>();
+		fields.add(new Field("revision", "INTEGER", false, null));
+		fields.add(new Field("ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
+		pkeyFields.add("revision");
 		
+		PrimaryKey pkey = new PrimaryKey(tableName+"_pkey", pkeyFields);
+		return new Table(tableName, fields, pkey, null, null);
 	}
 	
-	private void checkTable(DatabaseHelper db, Table table) throws SQLException {
-		if (!db.listTables().contains(table.getName())) {
-			db.createTable(table);
+	static XStream getXStream() {
+		XStream xstream = new XStream();
+		xstream.processAnnotations(Schema.class);
+		return xstream;
+	}
+	
+	public void inject(Connection conn, Schema schema) throws SQLException {
+		DatabaseHelper dh = new DatabaseHelper(conn);
+
+		// inject each table
+		for (Table table: schema.getTables()) {
+			dh.createTable(table);
 		}
-		for (Field field: table.getFields()) {
-			checkField(db, field);
-		}
-		System.out.println("Checking table "+table.getName());
+
+		Table metaTable = createMetaTable(schema.getMetaTable());
+		dh.createTable(metaTable);
+		
+		SqlBuilder sql = new SqlBuilder(" ", false);
+		sql.append("INSERT INTO");
+		sql.appendIdentifier(schema.getMetaTable());
+		sql.append("(\"revision\", \"ts\") VALUES (?,?)");
+		PreparedStatement stmt = conn.prepareStatement(sql.join());
+		stmt.setInt(1, schema.getRevision());
+		stmt.setTimestamp(2, new Timestamp(Calendar.getInstance().getTimeInMillis()));
 	}
 
-	public void checkSchema(Connection conn, Schema schema) throws SQLException {
-		DatabaseHelper db = new DatabaseHelper(conn); 
-		for (Table table: schema.getTables()) {
-			checkTable(db, table);
-		}
+	public Schema readSchema(InputStream is) {
+		XStream xstream = getXStream();
+		Schema rc = (Schema) xstream.fromXML(is);
+		rc.assignNamesToUnnamedIndices();
+		return rc;
+
+	}
+	
+	public Schema readSchema(String filename) throws FileNotFoundException {
+		File file = new File(filename);
+		return readSchema(new FileInputStream(file));
 	}
 }

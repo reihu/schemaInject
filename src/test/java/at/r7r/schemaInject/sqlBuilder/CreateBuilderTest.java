@@ -4,32 +4,34 @@ import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.thoughtworks.xstream.XStream;
+import org.junit.Assert;
 
 import at.r7r.schemaInject.SchemaExtract;
+import at.r7r.schemaInject.SchemaInject;
 import at.r7r.schemaInject.Util;
-import at.r7r.schemaInject.dao.DatabaseHelper;
 import at.r7r.schemaInject.entity.Schema;
-import at.r7r.schemaInject.entity.Table;
 import junit.framework.TestCase;
 
 public class CreateBuilderTest extends TestCase {
-	public void testBuildTable() throws SQLException {
+	/**
+	 * Tries to inject a schema into a HSQL in-memory database. It then re-extracts it and compares them
+	 * @throws SQLException
+	 */
+	public void testHsqlCreate() throws SQLException {
 		// read schema.xml
+		SchemaInject injecter = new SchemaInject();
 		InputStream is = ClassLoader.getSystemResourceAsStream("createTest/catandmouse.xml");
-		Schema schema = Util.readSchema(is);
+		Schema schema = injecter.readSchema(is);
 		Connection conn = Util.getDbConnection();
+		injecter.inject(conn, schema);
 
-		// inject each table
-		for (Table table: schema.getTables()) {
-			new DatabaseHelper(conn).createTable(table);
-		}
-
-		// extract tables and print them
-		SchemaExtract extracter = new SchemaExtract();
-		Schema resultingSchema = extracter.getSchema(conn);
-		XStream xstream = Util.getXStream();
+		// extract schema and compares the two
+		SchemaExtract extracter = new SchemaExtract(conn, schema.getMetaTable());
+		Schema resultingSchema = extracter.getSchema();
 		System.out.println("Resulting schema:");
-		xstream.toXML(resultingSchema, System.out);
+		extracter.writeSchema(resultingSchema, System.out);
+		
+		Assert.assertEquals(schema, resultingSchema);
+		
 	}
 }

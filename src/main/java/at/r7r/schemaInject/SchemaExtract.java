@@ -1,10 +1,16 @@
 package at.r7r.schemaInject;
 
+import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
+import com.thoughtworks.xstream.XStream;
+
 import at.r7r.schemaInject.dao.DatabaseHelper;
+import at.r7r.schemaInject.dao.SqlBuilder;
 import at.r7r.schemaInject.entity.Field;
 import at.r7r.schemaInject.entity.ForeignKey;
 import at.r7r.schemaInject.entity.PrimaryKey;
@@ -16,33 +22,54 @@ import at.r7r.schemaInject.entity.Unique;
  * Extracts entity objects based on the current database schema
  */
 public class SchemaExtract {
-	private static List<ForeignKey> getForeignKeys(Connection conn, String tableName) throws SQLException {
-		return new DatabaseHelper(conn).getForeignKeys(tableName);
+	private Connection conn;
+	private String metaTableName;
+	
+	public SchemaExtract(Connection conn, String metaTableName) {
+		this.conn = conn;
+		this.metaTableName = metaTableName;
 	}
-
-	private static PrimaryKey getPrimaryKey(Connection conn, String tableName) throws SQLException {
-		return new DatabaseHelper(conn).getPrimaryKey(tableName);
+	
+	public SchemaExtract(Connection conn) {
+		this(conn, "_schemaInject");
 	}
-
-	public Schema getSchema(Connection conn) throws SQLException {
+	
+	public Schema getSchema() throws SQLException {
 		// TODO get revision, metatable name and prefix
 		Schema rc = new Schema();
-		for (String tableName: new DatabaseHelper(conn).listTables()) {
-			rc.addTable(getTable(conn, tableName));
+		
+		SqlBuilder query = new SqlBuilder(" ", false);
+		query.append("SELECT MAX(\"revision\") FROM");
+		query.appendIdentifier(metaTableName);
+
+		Statement stmt = conn.createStatement();
+		ResultSet rs = stmt.executeQuery(query.join());
+		int rev = 0;
+		
+		if (rs.next()) {
+			rev = rs.getInt(1);
 		}
+		
+		rc.setRevision(rev);
+		
+		for (String tableName: new DatabaseHelper(conn).listTables()) {
+			rc.addTable(getTable(tableName));
+		}
+		
 		return rc;
 	}
 
-	private Table getTable(Connection conn, String name) throws SQLException {
-		List<Field> fields = new DatabaseHelper(conn).getFields(name);
-		PrimaryKey pkey = getPrimaryKey(conn, name);
-		List<ForeignKey> fkeys = getForeignKeys(conn, name);
-		List<Unique> uniques = getUniqueConstraints(conn, name);
+	private Table getTable(String name) throws SQLException {
+		DatabaseHelper db = new DatabaseHelper(conn);
+		List<Field> fields = db.getFields(name);
+		PrimaryKey pkey = db.getPrimaryKey(name);
+		List<ForeignKey> fkeys = db.getForeignKeys(name);
+		List<Unique> uniques = db.getUniqueConstraints(name);
 		return new Table(name, fields, pkey, fkeys, uniques);
 	}
-
-	private List<Unique> getUniqueConstraints(Connection conn, String tableName) throws SQLException {
-		List<Unique> rc = new DatabaseHelper(conn).getUniqueConstraints(tableName);
-		return rc;
+	
+	public void writeSchema(Schema schema, OutputStream os) {
+		XStream xstream = SchemaInject.getXStream();
+		xstream.toXML(schema, os);
 	}
 }
