@@ -3,7 +3,7 @@ package at.r7r.schemaInject.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import at.r7r.schemaInject.inject.SqlBuilder;
+import at.r7r.schemaInject.dao.SqlBuilder;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
