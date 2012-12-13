@@ -50,6 +50,26 @@ public class Table {
 		this.foreignKeys = fkeys;
 		this.uniques = uniques;
 	}
+
+	/**
+	 * Assigns names to each unnamed index stored in this table.
+	 * 
+	 * The index name schema is tableName_indexType_field1_..._fieldN
+	 * 
+	 * Doing that will make sure we'll correctly recognize keys on update 
+	 * 
+	 * This method is automatically called by Schema.assignNamesToUnnamedIndices() (which in turn is called by Util.readSchema())
+	 */
+	public void assignNamesToUnnamedIndices() {
+		primaryKey.assignNameIfUnnamed(getName());
+		for (ForeignKey fkey: getForeignKeys()) {
+			fkey.assignNameIfUnnamed(getName());
+		}
+		
+		for (Unique unique: getUniqueConstraints()) {
+			unique.assignNameIfUnnamed(getName());
+		}
+	}
 	
 	/**
 	 * Return the table name
@@ -88,6 +108,7 @@ public class Table {
 	 * @return Unique Constraints
 	 */
 	public List<Unique> getUniqueConstraints() {
+		if (uniques == null) uniques = new ArrayList<Unique>();
 		return uniques;
 	}
 }

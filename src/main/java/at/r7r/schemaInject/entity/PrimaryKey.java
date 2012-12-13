@@ -10,12 +10,6 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 @XStreamAlias("pkey")
 public class PrimaryKey extends Constraint {
 	/**
-	 * The name of the private key (set it to null to use implicit keys)
-	 */
-	@XStreamAsAttribute
-	private String name = null;
-
-	/**
 	 * If there's only one column in the primary key, you can use the 'field' attribute to specify which one it is
 	 */
 	@XStreamAlias("field")
@@ -29,12 +23,15 @@ public class PrimaryKey extends Constraint {
 	private List<String> fields = new ArrayList<String>();
 
 	public PrimaryKey(String name, List<String> fields) {
-		this.name = name;
+		super(name);
 
-		if (fields.size() == 1) {
-			this.onlyField = fields.get(0);
-		}
-		else this.fields = fields;
+		this.onlyField = setFields(this.fields, fields);
+	}
+	
+	@Override
+	protected String autogenerateName(List<String> fields) {
+		// ignore the fields parameter as the table name is sufficient
+		return "pkey";
 	}
 
 	public int getFieldCount() {
@@ -43,9 +40,5 @@ public class PrimaryKey extends Constraint {
 
 	public List<String> getFields() {
 		return getFields(onlyField, fields);
-	}
-
-	public String getName() {
-		return name;
 	}
 }

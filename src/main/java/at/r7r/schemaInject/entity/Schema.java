@@ -48,6 +48,25 @@ public class Schema {
 	private List<Table> tables = new ArrayList<Table>();
 	
 	/**
+	 * Assigns names to all the indices that don't have assigned names in the schema.xml
+	 * 
+	 * The names will look like tableName_idxType_field1_..._fieldN.
+	 * That makes sure indices will be recognized in later runs.
+	 * 
+	 * This method calls Table.assignNamesToUnnamedIndices() for each child table.
+	 * It is called by Util.readSchema()
+	 */
+	public void assignNamesToUnnamedIndices() {
+		for (Table table: tables) {
+			table.assignNamesToUnnamedIndices();
+		}
+		
+/*		for (Sequence seq: sequences) {
+			//seq.assignNameIfUnnamed(); <-- Sequences have to have names
+		}*/
+	}
+	
+	/**
 	 * Returns the current revision of the XML schema
 	 * @return revision (default: 0)
 	 */
