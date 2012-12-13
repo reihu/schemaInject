@@ -11,7 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * Base class for all constraints (PrimaryKey, ForeignKey, Unique, Check)
  * @author Manuel Reithuber
  */
-public abstract class Constraint {
+public abstract class Constraint implements NamedEntity {
 	/**
 	 * The name of the constraint (set it to null to use implicit names)
 	 */

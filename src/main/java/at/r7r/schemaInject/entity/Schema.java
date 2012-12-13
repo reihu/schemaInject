@@ -82,6 +82,10 @@ public class Schema {
 	public List<Sequence> getSequences() {
 		return sequences;
 	}
+	
+	public Sequence getSequence(String name) {
+		return getItemByName(getSequences(), name);
+	}
 
 	/**
 	 * Returns all tables defined in this schema
@@ -97,12 +101,7 @@ public class Schema {
 	 * @return Table or null if not found
 	 */
 	public Table getTable(String name) {
-		for (Table table: getTables()) {
-			if (table.getName().equals(name)) {
-				return table;
-			}
-		}
-		return null;
+		return getItemByName(getTables(), name);
 	}
 	
 	/**
@@ -116,5 +115,57 @@ public class Schema {
 	
 	public void setRevision(int rev) {
 		this.revision = rev;
+	}
+	
+	/// TODO implement another equals()-like method that supports callbacks (for automatic schema updates)
+	@Override
+	public boolean equals(Object otherObject) {
+		if (otherObject == null) return false;
+		if (!(otherObject instanceof Schema)) return false;
+		Schema other = (Schema) otherObject;
+
+		if (!getMetaTable().equals(other.getMetaTable())) return false;
+		if (other.getRevision() != getRevision()) return false;
+
+		if (getTables().size() != other.getTables().size()) return false;
+		for (Table table: getTables()) {
+			Table otherTable = other.getTable(table.getName());
+			if (otherTable == null) return false;
+			if (!table.equals(otherTable)) return false;
+		}
+
+		if (getSequences().size() != other.getSequences().size()) return false;
+		for (Sequence seq: getSequences()) {
+			Sequence otherSequence = other.getSequence(seq.getName());
+			if (otherSequence == null) return false;
+			if (!seq.equals(otherSequence)) return false;
+		}
+		
+		return true;
+	}
+	
+	/// TODO move these two methods into another class
+	static <T extends NamedEntity> T getItemByName(List<T> list, String name) {
+		if (name == null) return null;
+		
+		for (T e: list) {
+			if (name.equals(e.getName())) return e;
+		}
+		return null;
+	}
+	
+	static boolean listsEqual(List<? extends NamedEntity> a, List<? extends NamedEntity> b) {
+		if (a == null && b == null) return true;
+		else if (a == null) return false;
+		else if (b == null) return false;
+		
+		if (a.size() != b.size()) return false;
+		for (NamedEntity entity: a) {
+			NamedEntity otherEntity = getItemByName(b, entity.getName());
+			if (otherEntity == null) return false;
+			if (!entity.equals(otherEntity)) return false;
+		}
+
+		return true;
 	}
 }

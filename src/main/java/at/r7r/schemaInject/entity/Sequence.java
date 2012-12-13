@@ -4,7 +4,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("sequence")
-public class Sequence {
+public class Sequence implements NamedEntity {
 	@XStreamAsAttribute
 	private String name = null;
 	
@@ -14,15 +14,15 @@ public class Sequence {
 	@XStreamAsAttribute
 	private long step = 0;
 	
-	long getFrom() {
+	public long getFrom() {
 		return from;
 	}
 	
-	String getName() {
+	public String getName() {
 		return name;
 	}
 	
-	long getStep() {
+	public long getStep() {
 		return step;
 	}
 }

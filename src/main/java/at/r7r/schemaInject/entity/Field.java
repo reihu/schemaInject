@@ -8,7 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author Manuel Reithuber
  */
 @XStreamAlias("field")
-public class Field {
+public class Field implements NamedEntity {
 	@XStreamAsAttribute
 	private String name;
 	@XStreamAsAttribute
