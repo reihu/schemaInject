@@ -8,9 +8,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author Manuel Reithuber
  */
 @XStreamAlias("field")
-public class Field implements NamedEntity {
-	@XStreamAsAttribute
-	private String name;
+public class Field extends Entity {
 	@XStreamAsAttribute
 	private String type;
 	@XStreamAsAttribute
@@ -22,16 +20,12 @@ public class Field implements NamedEntity {
 	private String defaultValue;
 	
 	public Field(String name, String type, boolean nullable, String defaultValue) {
-		this.name = name;
+		super(name);
 		this.type = type;
 		this.nullable = nullable;
 		this.defaultValue = defaultValue;
 	}
-	
-	public String getName() {
-		return name;
-	}
-	
+
 	public String getType() {
 		return type;
 	}

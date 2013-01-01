@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 /**
@@ -12,13 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author Manuel Reithuber
  */
 @XStreamAlias("table")
-public class Table implements NamedEntity {
-	/**
-	 * Table name
-	 */
-	@XStreamAsAttribute
-	private String name = "foo";
-	
+public class Table extends Entity {
 	/**
 	 * List of fields in this table
 	 */
@@ -44,7 +37,7 @@ public class Table implements NamedEntity {
 	private List<Unique> uniques = new ArrayList<Unique>();
 
 	public Table(String name, List<Field> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
-		this.name = name;
+		super(name);
 		this.fields = fields;
 		this.primaryKey = pkey;
 		this.foreignKeys = fkeys;
@@ -70,15 +63,7 @@ public class Table implements NamedEntity {
 			unique.assignNameIfUnnamed(getName());
 		}
 	}
-	
-	/**
-	 * Return the table name
-	 * @return Table name
-	 */
-	public String getName() {
-		return name;
-	}
-	
+
 	/**
 	 * Return all the table's fields
 	 * @return Fields (sometimes referred to as columns)

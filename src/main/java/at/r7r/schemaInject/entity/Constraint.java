@@ -5,21 +5,13 @@ import java.util.List;
 
 import at.r7r.schemaInject.dao.SqlBuilder;
 
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-
 /**
  * Base class for all constraints (PrimaryKey, ForeignKey, Unique, Check)
  * @author Manuel Reithuber
  */
-public abstract class Constraint implements NamedEntity {
-	/**
-	 * The name of the constraint (set it to null to use implicit names)
-	 */
-	@XStreamAsAttribute
-	private String name = null;
-
+public abstract class Constraint extends Entity {
 	public Constraint(String name) {
-		this.name = name;
+		super(name);
 	}
 	
 	protected abstract String autogenerateName(List<String> fields);
@@ -87,14 +79,6 @@ public abstract class Constraint implements NamedEntity {
 
 		return rc;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public boolean hasName() {
-		return name != null && name.length() > 0;
-	}
 	
 	/**
 	 * Checks the size of srcList and either returns the only element or copies the list to targetList
@@ -111,9 +95,5 @@ public abstract class Constraint implements NamedEntity {
 			tgtList.addAll(srcList);
 			return null;
 		}
-	}
-	
-	protected void setName(String name) {
-		this.name = name;
 	}
 }

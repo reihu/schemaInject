@@ -12,7 +12,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author Manuel Reithuber
  */
 @XStreamAlias("schema")
-public class Schema {
+public class Schema extends Entity {
 	/**
 	 * The current revision of the database schema.
 	 * Everytime you change something in the .xml file you should increment this value
@@ -39,7 +39,16 @@ public class Schema {
 	 */
 	@XStreamImplicit
 	private List<Table> tables = new ArrayList<Table>();
-	
+
+	/**
+	 * Default constructor
+	 * 
+	 * (Calls Entity(""), Schemas can't have names)
+	 */
+	public Schema() {
+		super("");
+	}
+
 	/**
 	 * Assigns names to all the indices that don't have assigned names in the schema.xml
 	 * 
@@ -145,7 +154,7 @@ public class Schema {
 	}
 	
 	/// TODO move these two methods into another class
-	static <T extends NamedEntity> T getItemByName(List<T> list, String name) {
+	static <T extends Entity> T getItemByName(List<T> list, String name) {
 		if (name == null) return null;
 		
 		for (T e: list) {
@@ -154,14 +163,14 @@ public class Schema {
 		return null;
 	}
 	
-	static boolean listsEqual(List<? extends NamedEntity> a, List<? extends NamedEntity> b) {
+	static boolean listsEqual(List<? extends Entity> a, List<? extends Entity> b) {
 		if (a == null && b == null) return true;
 		else if (a == null) return false;
 		else if (b == null) return false;
 		
 		if (a.size() != b.size()) return false;
-		for (NamedEntity entity: a) {
-			NamedEntity otherEntity = getItemByName(b, entity.getName());
+		for (Entity entity: a) {
+			Entity otherEntity = getItemByName(b, entity.getName());
 			if (otherEntity == null) return false;
 			if (!entity.equals(otherEntity)) return false;
 		}
