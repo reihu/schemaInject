@@ -53,19 +53,19 @@ public class SchemaExtract {
 		rc.setRevision(rev);
 		
 		for (String tableName: new DatabaseHelper(conn).listTables()) {
-			rc.addTable(getTable(tableName));
+			rc.addTable(getTable(rc, tableName));
 		}
 		
 		return rc;
 	}
 
-	private Table getTable(String name) throws SQLException {
+	private Table getTable(Schema schema, String name) throws SQLException {
 		DatabaseHelper db = new DatabaseHelper(conn);
 		List<Field> fields = db.getFields(name);
 		PrimaryKey pkey = db.getPrimaryKey(name);
 		List<ForeignKey> fkeys = db.getForeignKeys(name);
 		List<Unique> uniques = db.getUniqueConstraints(name);
-		return new Table(name, fields, pkey, fkeys, uniques);
+		return new Table(schema, name, fields, pkey, fkeys, uniques);
 	}
 	
 	public void writeSchema(Schema schema, OutputStream os) {

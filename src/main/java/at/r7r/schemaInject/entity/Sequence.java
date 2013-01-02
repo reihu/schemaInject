@@ -4,7 +4,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
 @XStreamAlias("sequence")
-public class Sequence extends Entity {
+public class Sequence extends Entity<Schema> {
 	@XStreamAsAttribute
 	private long from = 0;
 	
@@ -13,31 +13,34 @@ public class Sequence extends Entity {
 
 	/**
 	 * Sequence constructor
+	 * @param parent Parent entity
 	 * @param name Sequence name
 	 * @param from Initial value
 	 * @param step Sequence step
 	 */
-	public Sequence(String name, long from, long step) {
-		super(name);
+	public Sequence(Schema parent, String name, long from, long step) {
+		super(parent, name);
 		this.from = from;
 		this.step = step;
 	}
 	
 	/**
 	 * Sequence constructor (with step=1)
+	 * @param parent Parent entity
 	 * @param name Sequence name
 	 * @param from Initial value
 	 */
-	public Sequence(String name, long from) {
-		this(name, from, 1);
+	public Sequence(Schema parent, String name, long from) {
+		this(parent, name, from, 1);
 	}
 	
 	/**
 	 * Sequence constructor (with from=0, step=1)
+	 * @param parent Parent entity
 	 * @param name Sequence name
 	 */
-	public Sequence(String name) {
-		this(name, 0, 1);
+	public Sequence(Schema parent, String name) {
+		this(parent, name, 0, 1);
 	}
 
 	/**

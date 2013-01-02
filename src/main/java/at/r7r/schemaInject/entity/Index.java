@@ -15,8 +15,8 @@ public class Index extends Constraint {
 	@XStreamAsAttribute
 	private String oneField = null;
 
-	public Index(String name, List<String> fields) {
-		super(name);
+	public Index(Table parent, String name, List<String> fields) {
+		super(parent, name);
 		oneField = setFields(this.fields, fields);
 	}
 	

@@ -1,8 +1,9 @@
 package at.r7r.schemaInject.entity;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
+import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
-public abstract class Entity {
+public abstract class Entity<ParentType extends Entity<?>> {
 	/**
 	 * The name of the constraint (set it to null to use implicit names)
 	 */
@@ -10,10 +11,17 @@ public abstract class Entity {
 	private String name;
 	
 	/**
+	 * Link to the parent entity (may be null)
+	 */
+	@XStreamOmitField
+	private ParentType parent;
+	
+	/**
 	 * Default constructor
 	 * @param name Entity name
 	 */
-	public Entity(String name) {
+	public Entity(ParentType parent, String name) {
+		this.parent = parent;
 		this.name = name;
 	}
 	
@@ -21,8 +29,16 @@ public abstract class Entity {
 	 * Name getter
 	 * @return Entity name
 	 */
-	public final String getName() {
+	public String getName() {
 		return name;
+	}
+
+	/**
+	 * Returns the entity's Parent
+	 * @return Parent entity (might be null)
+	 */
+	public ParentType getParent() {
+		return parent;
 	}
 
 	/**

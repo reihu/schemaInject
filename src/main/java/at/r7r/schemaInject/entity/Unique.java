@@ -6,8 +6,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("unique")
 public class Unique extends Index {	
-	public Unique(String name, List<String> fields) {
-		super(name, fields);
+	public Unique(Table parent, String name, List<String> fields) {
+		super(parent, name, fields);
 	}
 	
 	@Override

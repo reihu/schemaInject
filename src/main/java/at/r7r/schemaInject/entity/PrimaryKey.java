@@ -22,8 +22,8 @@ public class PrimaryKey extends Constraint {
 	@XStreamImplicit(itemFieldName="field")
 	private List<String> fields = new ArrayList<String>();
 
-	public PrimaryKey(String name, List<String> fields) {
-		super(name);
+	public PrimaryKey(Table parent, String name, List<String> fields) {
+		super(parent, name);
 
 		this.onlyField = setFields(this.fields, fields);
 	}

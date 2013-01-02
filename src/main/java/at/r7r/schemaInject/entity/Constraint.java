@@ -9,9 +9,9 @@ import at.r7r.schemaInject.dao.SqlBuilder;
  * Base class for all constraints (PrimaryKey, ForeignKey, Unique, Check)
  * @author Manuel Reithuber
  */
-public abstract class Constraint extends Entity {
-	public Constraint(String name) {
-		super(name);
+public abstract class Constraint extends Entity<Table> {
+	public Constraint(Table parent, String name) {
+		super(parent, name);
 	}
 	
 	protected abstract String autogenerateName(List<String> fields);

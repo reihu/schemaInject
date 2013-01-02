@@ -45,7 +45,7 @@ public class DatabaseHelper {
 			String type = rs.getString(6);
 			String defaultValue = rs.getString(13);
 			int nullable = rs.getInt(11);
-			rc.add(new Field(name, type, nullable == DatabaseMetaData.columnNullable, defaultValue));
+			rc.add(new Field(null, name, type, nullable == DatabaseMetaData.columnNullable, defaultValue));
 		}
 
 		return rc;
@@ -64,7 +64,7 @@ public class DatabaseHelper {
 
 			ForeignKey fkey;
 			if (!fkeyMap.containsKey(fkeyName)) {
-				fkey = new ForeignKey(fkeyName, pkTable);
+				fkey = new ForeignKey(null, fkeyName, pkTable);
 				fkeyMap.put(fkeyName, fkey);
 			}
 			else fkey = fkeyMap.get(fkeyName);
@@ -98,10 +98,10 @@ public class DatabaseHelper {
 			Index idx;
 			
 			if (isUnique) {
-				idx = new Unique(indexName, fieldMap.get(indexName));
+				idx = new Unique(null, indexName, fieldMap.get(indexName));
 			}
 			else {
-				idx = new Index(indexName, fieldMap.get(indexName));
+				idx = new Index(null, indexName, fieldMap.get(indexName));
 			}
 			
 			indexMap.put(indexName, idx);
@@ -135,7 +135,7 @@ public class DatabaseHelper {
 			fields.put(seq, fieldName);
 		}
 
-		return new PrimaryKey(pkeyName, new ArrayList<String>(fields.values()));
+		return new PrimaryKey(null, pkeyName, new ArrayList<String>(fields.values()));
 	}
 
 	public List<String> listTables() throws SQLException {

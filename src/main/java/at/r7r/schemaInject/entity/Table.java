@@ -11,7 +11,7 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
  * @author Manuel Reithuber
  */
 @XStreamAlias("table")
-public class Table extends Entity {
+public class Table extends Entity<Schema> {
 	/**
 	 * List of fields in this table
 	 */
@@ -36,8 +36,8 @@ public class Table extends Entity {
 	@XStreamImplicit(itemFieldName="unique")
 	private List<Unique> uniques = new ArrayList<Unique>();
 
-	public Table(String name, List<Field> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
-		super(name);
+	public Table(Schema parent, String name, List<Field> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
+		super(parent, name);
 		this.fields = fields;
 		this.primaryKey = pkey;
 		this.foreignKeys = fkeys;

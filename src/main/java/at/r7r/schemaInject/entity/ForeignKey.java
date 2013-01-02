@@ -25,15 +25,15 @@ public class ForeignKey extends Constraint {
 	@XStreamImplicit(itemFieldName="to")
 	private List<String> toFields = new LinkedList<String>();
 
-	public ForeignKey(String name, List<String> from, String toTable, List<String> toFields) {
-		super(name);
+	public ForeignKey(Table parent, String name, List<String> from, String toTable, List<String> toFields) {
+		super(parent, name);
 		this.fromField = setFields(this.fromFields, from);
 		this.toTable = toTable;
 		this.toField = setFields(this.toFields, toFields);
 	}
 	
-	public ForeignKey(String name, String toTable) {
-		super(name);
+	public ForeignKey(Table parent, String name, String toTable) {
+		super(parent, name);
 		this.toTable = toTable;
 	}
 	

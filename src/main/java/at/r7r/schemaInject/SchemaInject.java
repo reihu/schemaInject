@@ -26,12 +26,12 @@ public class SchemaInject {
 	private static Table createMetaTable(String tableName) {
 		List<Field> fields = new ArrayList<Field>();
 		List<String> pkeyFields = new LinkedList<String>();
-		fields.add(new Field("revision", "INTEGER", false, null));
-		fields.add(new Field("ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
+		fields.add(new Field(null, "revision", "INTEGER", false, null));
+		fields.add(new Field(null, "ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
 		pkeyFields.add("revision");
 		
-		PrimaryKey pkey = new PrimaryKey(tableName+"_pkey", pkeyFields);
-		return new Table(tableName, fields, pkey, null, null);
+		PrimaryKey pkey = new PrimaryKey(null, tableName+"_pkey", pkeyFields);
+		return new Table(null, tableName, fields, pkey, null, null);
 	}
 	
 	static XStream getXStream() {
