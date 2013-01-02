@@ -80,6 +80,10 @@ public class SqlBuilder {
 		return buffer.toString();
 	}
 	
+	public void prepend(String str) {
+		mParts.add(0, str);
+	}
+	
 	/**
 	 * Simply calls {@link #join()}
 	 * @return Joined {@link String}
