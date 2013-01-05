@@ -75,7 +75,10 @@ public abstract class Constraint extends Entity<Table> {
 			rc = new ArrayList<String>();
 			rc.add(attr);
 		}
-		else rc = tagList;
+		else {
+			rc = tagList;
+			if (rc == null) rc = new ArrayList<String>();
+		}
 
 		return rc;
 	}
