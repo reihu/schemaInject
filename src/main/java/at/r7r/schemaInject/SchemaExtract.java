@@ -52,6 +52,7 @@ public class SchemaExtract {
 		
 		rc.setMetaTable(metaTableName);
 		rc.setRevision(rev);
+		rc.polish();
 		
 		for (String tableName: new DatabaseHelper(conn).listTables()) {
 			rc.addTable(getTable(rc, tableName));

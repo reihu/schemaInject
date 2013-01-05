@@ -130,6 +130,17 @@ public class Schema extends Entity<Schema> {
 		this.revision = rev;
 	}
 	
+	public void polish() {
+		for (Sequence schema: getSequences()) {
+			schema.setParent(this);
+			schema.polish();
+		}
+		for (Table table: getTables()) {
+			table.setParent(this);
+			table.polish();
+		}
+	}
+	
 	static boolean listsEqual(List<? extends Entity<?>> a, List<? extends Entity<?>> b) {
 		if (a == null && b == null) return true;
 		else if (a == null) return false;

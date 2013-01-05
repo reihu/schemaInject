@@ -35,6 +35,7 @@ public class CreateBuilderTest extends TestCase {
 		System.out.println("Resulting schema:");
 		extracter.writeSchema(resultingSchema, System.out);
 		
+		schema.printEquals(resultingSchema);
 		Assert.assertEquals(schema, resultingSchema);
 		
 	}

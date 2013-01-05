@@ -43,6 +43,8 @@ public class SchemaInject {
 	public void inject(Connection conn, Schema schema) throws SQLException {
 		DatabaseHelper dh = new DatabaseHelper(conn);
 
+		schema.polish();
+		
 		// inject each table
 		for (Table table: schema.getTables()) {
 			dh.createTable(table);

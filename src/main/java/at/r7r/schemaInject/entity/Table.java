@@ -97,4 +97,27 @@ public class Table extends Entity<Schema> {
 		if (uniques == null) uniques = new ArrayList<Unique>();
 		return uniques;
 	}
+	
+	public void polish() {
+		for (Field field: getFields()) {
+			field.setParent(this);
+			field.polish();
+		}
+		
+		for (ForeignKey fkey: getForeignKeys()) {
+			fkey.setParent(this);
+			fkey.polish();
+		}
+		
+		PrimaryKey pkey = getPrimaryKey();
+		if (pkey != null) {
+			pkey.setParent(this);
+			pkey.polish();
+		}
+		
+		for (Unique uniq: getUniqueConstraints()) {
+			uniq.setParent(this);
+			uniq.polish();
+		}
+	}
 }

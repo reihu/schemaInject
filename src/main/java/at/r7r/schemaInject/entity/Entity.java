@@ -1,5 +1,6 @@
 package at.r7r.schemaInject.entity;
 
+import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -15,7 +16,9 @@ import com.thoughtworks.xstream.annotations.XStreamOmitField;
 
 public abstract class Entity<ParentType extends Entity<?>> {
 	public interface EqualityHandler {
-		void entitiesDiffer(Entity<?> a, Entity<?> b);
+		void entitiesDiffer(Entity<?> a, Entity<?> b, Field field);
+		void newEntity(Entity<?> e);
+		void deletedEntity(Entity<?> e);
 	}
 	
 	/**
@@ -71,6 +74,14 @@ public abstract class Entity<ParentType extends Entity<?>> {
 		this.name = name;
 	}
 	
+	/**
+	 * Sets the parent object of this Entity
+	 * @param parent New parent object
+	 */
+	protected void setParent(ParentType parent) {
+		this.parent = parent;
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Entity<?>) return equals((Entity<?>) obj, null);
@@ -94,7 +105,6 @@ public abstract class Entity<ParentType extends Entity<?>> {
 		if (firstList == secondList) return true;
 		else if (firstList == null) return false;
 		else if (secondList == null) return false;
-		else if (firstList.size() != secondList.size()) return false;
 		boolean rc = true;
 		
 		for (Object o: firstList) {
@@ -168,18 +178,46 @@ public abstract class Entity<ParentType extends Entity<?>> {
 				field.setAccessible(true);
 				Object thisValue = field.get(this), otherValue = field.get(other);
 				if (!valueEquals(field, thisValue, otherValue, handler)) {
-					if (handler != null) handler.entitiesDiffer(this, other);
-					System.err.println("Values differ: "+this+" value "+field.getName()+"='"+thisValue+"', other='"+otherValue+"'");
+					if (handler != null) handler.entitiesDiffer(this, other, field);
 					rc = false;
 				}
 			}
 			catch (IllegalAccessException e) {
-				// TODO find something reasonable to do here
 				System.err.println("Entity equals error: Couldn't access field '"+field.getName()+"'");
 			}
 		}
 		return rc;
 	}
+	
+	public void printEquals(Entity<?> other, final PrintStream out) {
+		equals(other, new EqualityHandler() {
+			public void newEntity(Entity<?> e) {
+				out.println("New: "+e);
+			}
+			
+			public void entitiesDiffer(Entity<?> a, Entity<?> b, Field field) {
+				field.setAccessible(true);
+				try {
+					Object thisValue = field.get(a);
+					Object otherValue = field.get(b);
+					System.err.println("Values differ: "+a+" value "+field.getName()+"='"+thisValue+"', other='"+otherValue+"'");
+				}
+				catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+			public void deletedEntity(Entity<?> e) {
+				out.println("Deleted: "+e);
+			}
+		});
+	}
+	
+	public void printEquals(Entity<?> other) {
+		printEquals(other, System.out);
+	}
+	
+	public void polish() {}
 	
 	@Override
 	public String toString() {
@@ -192,7 +230,12 @@ public abstract class Entity<ParentType extends Entity<?>> {
 			ancestor = ancestor.getParent();
 		}
 		
-		return getClass().getSimpleName()+" "+hierarchy.join();
+		String hier = hierarchy.join();
+		if (hier.startsWith(".")) {
+			hier = hier.substring(1);
+		}
+		
+		return getClass().getSimpleName()+" "+hier;
 	}
 
 	static <T extends Entity<?>> T getItemByName(List<T> list, String name) {
