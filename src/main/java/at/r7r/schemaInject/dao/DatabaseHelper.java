@@ -30,6 +30,10 @@ public class DatabaseHelper {
 		conn = connection;
 	}
 
+	public boolean compareTypes(String firstType, String secondType) {
+		return firstType.equalsIgnoreCase(secondType);
+	}
+	
 	public void createTable(Table table) throws SQLException {
 		String sql = new CreateBuilder().buildTable(table).join();
 		PreparedStatement stmt = conn.prepareStatement(sql);

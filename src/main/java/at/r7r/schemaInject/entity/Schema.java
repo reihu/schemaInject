@@ -122,45 +122,12 @@ public class Schema extends Entity<Schema> {
 		tables.add(t);
 	}
 	
+	public void setMetaTable(String metaTable) {
+		this.metaTable = metaTable;
+	}
+	
 	public void setRevision(int rev) {
 		this.revision = rev;
-	}
-	
-	/// TODO implement another equals()-like method that supports callbacks (for automatic schema updates)
-	@Override
-	public boolean equals(Object otherObject) {
-		if (otherObject == null) return false;
-		if (!(otherObject instanceof Schema)) return false;
-		Schema other = (Schema) otherObject;
-
-		if (!getMetaTable().equals(other.getMetaTable())) return false;
-		if (other.getRevision() != getRevision()) return false;
-
-		if (getTables().size() != other.getTables().size()) return false;
-		for (Table table: getTables()) {
-			Table otherTable = other.getTable(table.getName());
-			if (otherTable == null) return false;
-			if (!table.equals(otherTable)) return false;
-		}
-
-		if (getSequences().size() != other.getSequences().size()) return false;
-		for (Sequence seq: getSequences()) {
-			Sequence otherSequence = other.getSequence(seq.getName());
-			if (otherSequence == null) return false;
-			if (!seq.equals(otherSequence)) return false;
-		}
-		
-		return true;
-	}
-	
-	/// TODO move these two methods into another class
-	static <T extends Entity<?>> T getItemByName(List<T> list, String name) {
-		if (name == null) return null;
-		
-		for (T e: list) {
-			if (name.equals(e.getName())) return e;
-		}
-		return null;
 	}
 	
 	static boolean listsEqual(List<? extends Entity<?>> a, List<? extends Entity<?>> b) {

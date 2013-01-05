@@ -50,6 +50,7 @@ public class SchemaExtract {
 			rev = rs.getInt(1);
 		}
 		
+		rc.setMetaTable(metaTableName);
 		rc.setRevision(rev);
 		
 		for (String tableName: new DatabaseHelper(conn).listTables()) {

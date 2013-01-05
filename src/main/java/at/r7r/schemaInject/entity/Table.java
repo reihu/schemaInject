@@ -97,19 +97,4 @@ public class Table extends Entity<Schema> {
 		if (uniques == null) uniques = new ArrayList<Unique>();
 		return uniques;
 	}
-	
-	public boolean equals(Object otherObject) {
-		if (otherObject == null) return false;
-		if (!(otherObject instanceof Table)) return false;
-		Table other = (Table) otherObject;
-		
-		if (!getName().equals(other.getName())) return false;
-		
-		if (!Schema.listsEqual(getFields(), other.getFields())) return false;
-		if (!getPrimaryKey().equals(other.getPrimaryKey())) return false;
-		if (!Schema.listsEqual(getForeignKeys(), other.getForeignKeys())) return false;
-		if (!Schema.listsEqual(getUniqueConstraints(), other.getUniqueConstraints())) return false;
-		
-		return true;
-	}
 }

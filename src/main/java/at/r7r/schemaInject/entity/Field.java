@@ -1,5 +1,7 @@
 package at.r7r.schemaInject.entity;
 
+import at.r7r.schemaInject.dao.DatabaseHelper;
+
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 
@@ -40,5 +42,14 @@ public class Field extends Entity<Table> {
 	
 	public String getDefault() {
 		return defaultValue;
+	}
+	
+	@Override
+	protected boolean valueEquals(java.lang.reflect.Field field, Object thisValue, Object otherValue,
+			at.r7r.schemaInject.entity.Entity.EqualityHandler handler) {
+		if (field.getName().equals("type")) {
+			return new DatabaseHelper(null).compareTypes((String) thisValue, (String) otherValue);
+		}
+		else return super.valueEquals(field, thisValue, otherValue, handler);
 	}
 }
