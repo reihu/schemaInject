@@ -58,6 +58,7 @@ public class SchemaInject {
 		PreparedStatement stmt = conn.prepareStatement(sql.join());
 		stmt.setInt(1, schema.getRevision());
 		stmt.setTimestamp(2, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		stmt.execute();
 	}
 
 	public Schema readSchema(InputStream is) {
