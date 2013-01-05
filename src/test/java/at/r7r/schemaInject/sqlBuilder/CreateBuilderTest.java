@@ -28,6 +28,10 @@ public class CreateBuilderTest extends TestCase {
 		// extract schema and compares the two
 		SchemaExtract extracter = new SchemaExtract(conn, schema.getMetaTable());
 		Schema resultingSchema = extracter.getSchema();
+
+		System.out.println("Original schema:");
+		extracter.writeSchema(schema, System.out);
+
 		System.out.println("Resulting schema:");
 		extracter.writeSchema(resultingSchema, System.out);
 		
