@@ -4,28 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 @XStreamAlias("pkey")
 public class PrimaryKey extends Constraint {
-	/**
-	 * If there's only one column in the primary key, you can use the 'column' attribute to specify which one it is
-	 */
-	@XStreamAlias("column")
-	@XStreamAsAttribute
-	private String onlyColumn = null;
-
-	/**
-	 * To specify more than one column, use a <column> tag inside the <primary> tag for each column
-	 */
 	@XStreamImplicit(itemFieldName="column")
 	private List<String> columns = new ArrayList<String>();
 
 	public PrimaryKey(Table parent, String name, List<String> columns) {
 		super(parent, name);
 
-		this.onlyColumn = setColumns(this.columns, columns);
+		this.columns = columns;
 	}
 	
 	@Override
@@ -35,10 +24,11 @@ public class PrimaryKey extends Constraint {
 	}
 
 	public int getColumnCount() {
-		return getColumnCount(onlyColumn, columns);
+		return getColumns().size();
 	}
 
 	public List<String> getColumns() {
-		return getColumns(onlyColumn, columns);
+		if (columns == null) columns = new ArrayList<String>();
+		return columns;
 	}
 }

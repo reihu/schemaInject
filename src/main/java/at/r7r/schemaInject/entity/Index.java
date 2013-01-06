@@ -3,21 +3,15 @@ package at.r7r.schemaInject.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 public class Index extends Constraint {
 	@XStreamImplicit(itemFieldName="column")
 	private List<String> columns = new ArrayList<String>();
 
-	@XStreamAlias("column")
-	@XStreamAsAttribute
-	private String oneColumn = null;
-
 	public Index(Table parent, String name, List<String> columns) {
 		super(parent, name);
-		oneColumn = setColumns(this.columns, columns);
+		this.columns = columns;
 	}
 	
 	@Override
@@ -29,10 +23,11 @@ public class Index extends Constraint {
 	}
 
 	public int getColumnCount() {
-		return getColumnCount(oneColumn, columns);
+		return getColumns().size();
 	}
 
 	public List<String> getColumns() {
-		return getColumns(oneColumn, columns);
+		if (columns == null) columns = new ArrayList<String>();
+		return columns;
 	}
 }
