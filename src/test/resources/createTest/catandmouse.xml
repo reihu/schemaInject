@@ -1,4 +1,4 @@
-<schema revision="3" metaTable="_meta" prefix="lolcat_">
+<schema revision="3" metaTable="_testMeta" prefix="lolcat_">
 	<!-- sequences come first -->
 	<sequence name="seq_foo" start="10" interval="3" />
 
@@ -9,9 +9,16 @@
 		<column name="mother_id" type="integer" nullable="true" />
 		<column name="father_id" type="integer" nullable="true" />
 
-		<pkey column="cat_id" />
-		<unique column="name" />
-		<fkey from="mother_id" toTable="cat" toColumn="cat_id" />
+		<pkey>
+			<column>cat_id</column>
+		</pkey>
+		<unique>
+			<column>name</column>
+		</unique>
+		<fkey toTable="cat">
+			<from>mother_id</from>
+			<to>cat_id</to>
+		</fkey>
 		<fkey toTable="cat">
 			<from>father_id</from>
 			<to>cat_id</to>
@@ -22,7 +29,12 @@
 		<column name="name" type="varchar(50)" nullable="false" />
 		<column name="eatenBy" type="integer" nullable="true" />
 
-		<pkey column="mouse_id" />
-		<fkey from="eatenBy" toTable="cat" toColumn="cat_id" />
+		<pkey>
+			<column>mouse_id</column>
+		</pkey>
+		<fkey toTable="cat">
+			<from>eatenBy</from>
+			<to>cat_id</to>
+		</fkey>
 	</table>
 </schema>
