@@ -10,35 +10,35 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 @XStreamAlias("pkey")
 public class PrimaryKey extends Constraint {
 	/**
-	 * If there's only one column in the primary key, you can use the 'field' attribute to specify which one it is
+	 * If there's only one column in the primary key, you can use the 'column' attribute to specify which one it is
 	 */
-	@XStreamAlias("field")
+	@XStreamAlias("column")
 	@XStreamAsAttribute
-	private String onlyField = null;
+	private String onlyColumn = null;
 
 	/**
-	 * To specify more than one column, use a <field> tag inside the <primary> tag for each column
+	 * To specify more than one column, use a <column> tag inside the <primary> tag for each column
 	 */
-	@XStreamImplicit(itemFieldName="field")
-	private List<String> fields = new ArrayList<String>();
+	@XStreamImplicit(itemFieldName="column")
+	private List<String> columns = new ArrayList<String>();
 
-	public PrimaryKey(Table parent, String name, List<String> fields) {
+	public PrimaryKey(Table parent, String name, List<String> columns) {
 		super(parent, name);
 
-		this.onlyField = setFields(this.fields, fields);
+		this.onlyColumn = setColumns(this.columns, columns);
 	}
 	
 	@Override
-	protected String autogenerateName(List<String> fields) {
-		// ignore the fields parameter as the table name is sufficient
+	protected String autogenerateName(List<String> columns) {
+		// ignore the columns parameter as the table name is sufficient
 		return "pkey";
 	}
 
-	public int getFieldCount() {
-		return getFieldCount(onlyField, fields);
+	public int getColumnCount() {
+		return getColumnCount(onlyColumn, columns);
 	}
 
-	public List<String> getFields() {
-		return getFields(onlyField, fields);
+	public List<String> getColumns() {
+		return getColumns(onlyColumn, columns);
 	}
 }

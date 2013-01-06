@@ -9,7 +9,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * Data class representing table fields (aka colums)
  * @author Manuel Reithuber
  */
-@XStreamAlias("field")
+@XStreamAlias("column")
 public class Column extends Entity<Table> {
 	@XStreamAsAttribute
 	private String type;

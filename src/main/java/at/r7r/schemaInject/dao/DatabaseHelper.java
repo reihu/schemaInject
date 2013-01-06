@@ -40,7 +40,7 @@ public class DatabaseHelper {
 		stmt.execute();
 	}
 
-	public List<Column> getFields(String tableName) throws SQLException {
+	public List<Column> getColumns(String tableName) throws SQLException {
 		ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, "%");
 		List<Column> rc = new ArrayList<Column>();
 
@@ -63,8 +63,8 @@ public class DatabaseHelper {
 			String fkeyName = rs.getString("FK_NAME");
 			if (fkeyName == null) continue;
 			String pkTable = rs.getString("PKTABLE_NAME");
-			String pkField = rs.getString("PKCOLUMN_NAME");
-			String fkField = rs.getString("FKCOLUMN_NAME");
+			String pkColumn = rs.getString("PKCOLUMN_NAME");
+			String fkColumn = rs.getString("FKCOLUMN_NAME");
 
 			ForeignKey fkey;
 			if (!fkeyMap.containsKey(fkeyName)) {
@@ -73,7 +73,7 @@ public class DatabaseHelper {
 			}
 			else fkey = fkeyMap.get(fkeyName);
 
-			fkey.addField(fkField, pkField);
+			fkey.addColumn(fkColumn, pkColumn);
 		}
 
 		return new ArrayList<ForeignKey>(fkeyMap.values());
@@ -82,7 +82,7 @@ public class DatabaseHelper {
 	private List<Index> getIndices(String tableName, Boolean __unique) throws SQLException {
 		ResultSet rs = conn.getMetaData().getIndexInfo(null, null, tableName, __unique != null ? __unique : false, true);
 		Map<String,Index> indexMap = new HashMap<String, Index>();
-		Map<String,List<String>> fieldMap = new HashMap<String, List<String>>();
+		Map<String,List<String>> columnMap = new HashMap<String, List<String>>();
 		Map<String,Boolean> uniqueMap = new HashMap<String, Boolean>();
 		
 		while (rs.next()) {
@@ -91,8 +91,8 @@ public class DatabaseHelper {
 			boolean isUnique = !rs.getBoolean("NON_UNIQUE");
 
 			if (__unique == null || __unique == isUnique) {
-				if (!fieldMap.containsKey(indexName)) fieldMap.put(indexName, new ArrayList<String>());
-				fieldMap.get(indexName).add(colName);
+				if (!columnMap.containsKey(indexName)) columnMap.put(indexName, new ArrayList<String>());
+				columnMap.get(indexName).add(colName);
 				uniqueMap.put(indexName, isUnique);
 			}
 		}
@@ -102,10 +102,10 @@ public class DatabaseHelper {
 			Index idx;
 			
 			if (isUnique) {
-				idx = new Unique(null, indexName, fieldMap.get(indexName));
+				idx = new Unique(null, indexName, columnMap.get(indexName));
 			}
 			else {
-				idx = new Index(null, indexName, fieldMap.get(indexName));
+				idx = new Index(null, indexName, columnMap.get(indexName));
 			}
 			
 			indexMap.put(indexName, idx);
@@ -129,17 +129,17 @@ public class DatabaseHelper {
 
 	public PrimaryKey getPrimaryKey(String tableName) throws SQLException {
 		ResultSet rs = conn.getMetaData().getPrimaryKeys(null, null, tableName);
-		Map<Integer, String> fields = new TreeMap<Integer, String>();
+		Map<Integer, String> columns = new TreeMap<Integer, String>();
 		String pkeyName = null;
 
 		while (rs.next()) {
-			String fieldName = rs.getString("COLUMN_NAME");
+			String columnName = rs.getString("COLUMN_NAME");
 			int seq = rs.getInt("KEY_SEQ");
 			if (pkeyName == null) pkeyName = rs.getString("PK_NAME");
-			fields.put(seq, fieldName);
+			columns.put(seq, columnName);
 		}
 
-		return new PrimaryKey(null, pkeyName, new ArrayList<String>(fields.values()));
+		return new PrimaryKey(null, pkeyName, new ArrayList<String>(columns.values()));
 	}
 
 	public List<String> listTables() throws SQLException {

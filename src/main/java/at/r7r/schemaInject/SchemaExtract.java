@@ -63,11 +63,11 @@ public class SchemaExtract {
 
 	private Table getTable(Schema schema, String name) throws SQLException {
 		DatabaseHelper db = new DatabaseHelper(conn);
-		List<Column> fields = db.getFields(name);
+		List<Column> columns = db.getColumns(name);
 		PrimaryKey pkey = db.getPrimaryKey(name);
 		List<ForeignKey> fkeys = db.getForeignKeys(name);
 		List<Unique> uniques = db.getUniqueConstraints(name);
-		return new Table(schema, name, fields, pkey, fkeys, uniques);
+		return new Table(schema, name, columns, pkey, fkeys, uniques);
 	}
 	
 	public void writeSchema(Schema schema, OutputStream os) {

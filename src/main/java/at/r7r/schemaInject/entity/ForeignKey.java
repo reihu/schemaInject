@@ -11,25 +11,25 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 public class ForeignKey extends Constraint {
 	@XStreamAsAttribute
 	@XStreamAlias("from")
-	private String fromField = null;
+	private String fromColumn = null;
 
 	@XStreamAsAttribute
 	private String toTable = null;
 
 	@XStreamAsAttribute
-	private String toField = null;
+	private String toColumn = null;
 
 	@XStreamImplicit(itemFieldName="from")
-	private List<String> fromFields = new LinkedList<String>();
+	private List<String> fromColumns = new LinkedList<String>();
 
 	@XStreamImplicit(itemFieldName="to")
-	private List<String> toFields = new LinkedList<String>();
+	private List<String> toColumns = new LinkedList<String>();
 
-	public ForeignKey(Table parent, String name, List<String> from, String toTable, List<String> toFields) {
+	public ForeignKey(Table parent, String name, List<String> from, String toTable, List<String> toColumns) {
 		super(parent, name);
-		this.fromField = setFields(this.fromFields, from);
+		this.fromColumn = setColumns(this.fromColumns, from);
 		this.toTable = toTable;
-		this.toField = setFields(this.toFields, toFields);
+		this.toColumn = setColumns(this.toColumns, toColumns);
 	}
 	
 	public ForeignKey(Table parent, String name, String toTable) {
@@ -37,21 +37,21 @@ public class ForeignKey extends Constraint {
 		this.toTable = toTable;
 	}
 	
-	public void addField(String fromField, String toField) {
-		this.fromField = addToFields(this.fromFields, this.fromField, fromField);
-		this.toField = addToFields(this.toFields, this.toField, toField);
+	public void addColumn(String fromColumn, String toColumn) {
+		this.fromColumn = addToColumns(this.fromColumns, this.fromColumn, fromColumn);
+		this.toColumn = addToColumns(this.toColumns, this.toColumn, toColumn);
 	}
 
 	@Override
-	protected String autogenerateName(List<String> fields) {
-		for (String field: getFrom()) {
-			fields.add(field);
+	protected String autogenerateName(List<String> columns) {
+		for (String column: getFrom()) {
+			columns.add(column);
 		}
 		return "fkey";
 	}
 	
 	public List<String> getFrom() {
-		return getFields(fromField, fromFields);
+		return getColumns(fromColumn, fromColumns);
 	}
 
 	public String getToTable() {
@@ -59,6 +59,6 @@ public class ForeignKey extends Constraint {
 	}
 
 	public List<String> getTo() {
-		return getFields(toField, toFields);
+		return getColumns(toColumn, toColumns);
 	}
 }

@@ -10,19 +10,19 @@ import at.r7r.schemaInject.entity.Unique;
  * Class that builds SQL 
  */
 public class CreateBuilder {	
-	private SqlBuilder buildField(Column field) {
+	private SqlBuilder buildColumn(Column column) {
 		SqlBuilder rc = new SqlBuilder(" ", false);
-		rc.append("  \""+field.getName()+'"');
-		rc.append(field.getType());
-		if (!field.isNullable()) rc.append("NOT");
+		rc.append("  \""+column.getName()+'"');
+		rc.append(column.getType());
+		if (!column.isNullable()) rc.append("NOT");
 		rc.append("NULL");
-		if (field.getSequence() != null) {
+		if (column.getSequence() != null) {
 //			string.append("DEFAULT ");
 // TODO implement sequence support			
 		}
-		else if (field.getDefault() != null) {
+		else if (column.getDefault() != null) {
 			rc.append("DEFAULT");
-			rc.append('\''+field.getDefault()+'\'');
+			rc.append('\''+column.getDefault()+'\'');
 		}
 		return rc;
 	}
@@ -37,18 +37,18 @@ public class CreateBuilder {
 		}
 		sql.append("FOREIGN KEY");
 		
-		SqlBuilder fields = new SqlBuilder(", ", false);
-		for (String field: key.getFrom()) {
-			fields.appendIdentifier(field);
+		SqlBuilder columns = new SqlBuilder(", ", false);
+		for (String column: key.getFrom()) {
+			columns.appendIdentifier(column);
 		}
-		sql.append('('+fields.join()+')');
+		sql.append('('+columns.join()+')');
 		sql.append("REFERENCES");
 		sql.appendIdentifier(key.getToTable());
-		fields = new SqlBuilder(", ", false);
-		for (String field: key.getTo()) {
-			fields.appendIdentifier(field);
+		columns = new SqlBuilder(", ", false);
+		for (String column: key.getTo()) {
+			columns.appendIdentifier(column);
 		}
-		sql.append('('+fields.join()+')');
+		sql.append('('+columns.join()+')');
 		
 		return sql;
 	}
@@ -62,11 +62,11 @@ public class CreateBuilder {
 			rc.append(" ");
 		}
 		rc.append("PRIMARY KEY (");
-		SqlBuilder fields = new SqlBuilder(", ", false);
-		for (String field: key.getFields()) {
-			fields.appendIdentifier(field);
+		SqlBuilder columns = new SqlBuilder(", ", false);
+		for (String column: key.getColumns()) {
+			columns.appendIdentifier(column);
 		}
-		rc.append(fields);
+		rc.append(columns);
 		rc.append(")");
 		return rc;
 	}
@@ -78,8 +78,8 @@ public class CreateBuilder {
 		rc.append("(\n");
 		
 		SqlBuilder parts = new SqlBuilder(",", true);
-		for (Column field: table.getFields()) {
-			parts.append(buildField(field));
+		for (Column column: table.getColumns()) {
+			parts.append(buildColumn(column));
 		}
 		if (table.getPrimaryKey() != null) {
 			parts.append(buildPrimaryKey(table.getPrimaryKey()));
@@ -109,12 +109,12 @@ public class CreateBuilder {
 		rc.append("UNIQUE");
 		
 		rc.append("(");
-		SqlBuilder fields = new SqlBuilder(", ", false);
-		for (String field: unique.getFields()) {
-			fields.appendIdentifier(field);
+		SqlBuilder columns = new SqlBuilder(", ", false);
+		for (String column: unique.getColumns()) {
+			columns.appendIdentifier(column);
 		}
 		
-		rc.append(fields);
+		rc.append(columns);
 		rc.append(")");
 		
 		return rc;

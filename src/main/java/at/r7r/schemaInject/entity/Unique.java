@@ -6,13 +6,13 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 @XStreamAlias("unique")
 public class Unique extends Index {	
-	public Unique(Table parent, String name, List<String> fields) {
-		super(parent, name, fields);
+	public Unique(Table parent, String name, List<String> columns) {
+		super(parent, name, columns);
 	}
 	
 	@Override
-	protected String autogenerateName(List<String> fields) {
-		super.autogenerateName(fields);
+	protected String autogenerateName(List<String> columns) {
+		super.autogenerateName(columns);
 		return "uniq";
 	}
 }

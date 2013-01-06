@@ -24,14 +24,14 @@ import at.r7r.schemaInject.entity.Table;
 
 public class SchemaInject {
 	private static Table createMetaTable(String tableName) {
-		List<Column> fields = new ArrayList<Column>();
-		List<String> pkeyFields = new LinkedList<String>();
-		fields.add(new Column(null, "revision", "INTEGER", false, null));
-		fields.add(new Column(null, "ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
-		pkeyFields.add("revision");
+		List<Column> columns = new ArrayList<Column>();
+		List<String> pkeyColumns = new LinkedList<String>();
+		columns.add(new Column(null, "revision", "INTEGER", false, null));
+		columns.add(new Column(null, "ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
+		pkeyColumns.add("revision");
 		
-		PrimaryKey pkey = new PrimaryKey(null, tableName+"_pkey", pkeyFields);
-		return new Table(null, tableName, fields, pkey, null, null);
+		PrimaryKey pkey = new PrimaryKey(null, tableName+"_pkey", pkeyColumns);
+		return new Table(null, tableName, columns, pkey, null, null);
 	}
 	
 	static XStream getXStream() {

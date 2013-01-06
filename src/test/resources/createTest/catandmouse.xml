@@ -3,26 +3,26 @@
 	<sequence name="seq_foo" start="10" interval="3" />
 
 	<table name="cat">
-		<field name="cat_id" type="integer" sequence="seq_foo" nullable="false" />
-		<field name="name" type="varchar(50)" nullable="false" />
-		<field name="gender" type="char(1)" nullable="false" />
-		<field name="mother_id" type="integer" nullable="true" />
-		<field name="father_id" type="integer" nullable="true" />
+		<column name="cat_id" type="integer" sequence="seq_foo" nullable="false" />
+		<column name="name" type="varchar(50)" nullable="false" />
+		<column name="gender" type="char(1)" nullable="false" />
+		<column name="mother_id" type="integer" nullable="true" />
+		<column name="father_id" type="integer" nullable="true" />
 
-		<pkey field="cat_id" />
-		<unique field="name" />
-		<fkey from="mother_id" toTable="cat" toField="cat_id" />
+		<pkey column="cat_id" />
+		<unique column="name" />
+		<fkey from="mother_id" toTable="cat" toColumn="cat_id" />
 		<fkey toTable="cat">
 			<from>father_id</from>
 			<to>cat_id</to>
 		</fkey>
 	</table>
 	<table name="mouse">
-		<field name="mouse_id" type="integer" auto-increment="true" nullable="false" />
-		<field name="name" type="varchar(50)" nullable="false" />
-		<field name="eatenBy" type="integer" nullable="true" />
+		<column name="mouse_id" type="integer" auto-increment="true" nullable="false" />
+		<column name="name" type="varchar(50)" nullable="false" />
+		<column name="eatenBy" type="integer" nullable="true" />
 
-		<pkey field="mouse_id" />
-		<fkey from="eatenBy" toTable="cat" toField="cat_id" />
+		<pkey column="mouse_id" />
+		<fkey from="eatenBy" toTable="cat" toColumn="cat_id" />
 	</table>
 </schema>

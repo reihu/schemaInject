@@ -8,31 +8,31 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 
 public class Index extends Constraint {
-	@XStreamImplicit(itemFieldName="field")
-	private List<String> fields = new ArrayList<String>();
+	@XStreamImplicit(itemFieldName="column")
+	private List<String> columns = new ArrayList<String>();
 
-	@XStreamAlias("field")
+	@XStreamAlias("column")
 	@XStreamAsAttribute
-	private String oneField = null;
+	private String oneColumn = null;
 
-	public Index(Table parent, String name, List<String> fields) {
+	public Index(Table parent, String name, List<String> columns) {
 		super(parent, name);
-		oneField = setFields(this.fields, fields);
+		oneColumn = setColumns(this.columns, columns);
 	}
 	
 	@Override
-	protected String autogenerateName(List<String> fields) {
-		for (String field: getFields()) {
-			fields.add(field);
+	protected String autogenerateName(List<String> columns) {
+		for (String column: getColumns()) {
+			columns.add(column);
 		}
 		return "idx";
 	}
 
-	public int getFieldCount() {
-		return getFieldCount(oneField, fields);
+	public int getColumnCount() {
+		return getColumnCount(oneColumn, columns);
 	}
 
-	public List<String> getFields() {
-		return getFields(oneField, fields);
+	public List<String> getColumns() {
+		return getColumns(oneColumn, columns);
 	}
 }

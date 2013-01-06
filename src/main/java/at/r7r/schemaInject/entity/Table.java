@@ -13,10 +13,10 @@ import com.thoughtworks.xstream.annotations.XStreamImplicit;
 @XStreamAlias("table")
 public class Table extends Entity<Schema> {
 	/**
-	 * List of fields in this table
+	 * List of columns in this table
 	 */
-	@XStreamImplicit(itemFieldName="field")
-	private List<Column> fields = new ArrayList<Column>();
+	@XStreamImplicit(itemFieldName="column")
+	private List<Column> columns = new ArrayList<Column>();
 
 	/**
 	 * Primary key
@@ -36,9 +36,9 @@ public class Table extends Entity<Schema> {
 	@XStreamImplicit(itemFieldName="unique")
 	private List<Unique> uniques = new ArrayList<Unique>();
 
-	public Table(Schema parent, String name, List<Column> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
+	public Table(Schema parent, String name, List<Column> columns, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
 		super(parent, name);
-		this.fields = fields;
+		this.columns = columns;
 		this.primaryKey = pkey;
 		this.foreignKeys = fkeys;
 		this.uniques = uniques;
@@ -47,7 +47,7 @@ public class Table extends Entity<Schema> {
 	/**
 	 * Assigns names to each unnamed index stored in this table.
 	 * 
-	 * The index name schema is tableName_indexType_field1_..._fieldN
+	 * The index name schema is tableName_indexType_col1_..._colN
 	 * 
 	 * Doing that will make sure we'll correctly recognize keys on update 
 	 * 
@@ -65,11 +65,11 @@ public class Table extends Entity<Schema> {
 	}
 
 	/**
-	 * Return all the table's fields
-	 * @return Fields (sometimes referred to as columns)
+	 * Return all the table's columns
+	 * @return Columns (sometimes referred to as columns)
 	 */
-	public List<Column> getFields() {
-		return fields;
+	public List<Column> getColumns() {
+		return columns;
 	}
 	
 	/**
@@ -99,9 +99,9 @@ public class Table extends Entity<Schema> {
 	}
 	
 	public void polish() {
-		for (Column field: getFields()) {
-			field.setParent(this);
-			field.polish();
+		for (Column column: getColumns()) {
+			column.setParent(this);
+			column.polish();
 		}
 		
 		for (ForeignKey fkey: getForeignKeys()) {

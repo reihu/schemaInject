@@ -52,7 +52,7 @@ public class Schema extends Entity<Schema> {
 	/**
 	 * Assigns names to all the indices that don't have assigned names in the schema.xml
 	 * 
-	 * The names will look like tableName_idxType_field1_..._fieldN.
+	 * The names will look like tableName_idxType_col1_..._colN.
 	 * That makes sure indices will be recognized in later runs.
 	 * 
 	 * This method calls Table.assignNamesToUnnamedIndices() for each child table.
