@@ -28,14 +28,14 @@ schemaInject will then do the following steps:
    schemaInject is done.
  * If they differ, schemaInject reads the database schema (i.e. all the tables and indexes) and compares
    them to the provided schema.xml and...
-   * creates every table, field and index that wasn't found in the database
-   * fills fields with the value of any `oldname` elements specified for them in the order they are specified (if there are any)
+   * creates every table, column and index that wasn't found in the database
+   * fills columns with the value of any `oldname` elements specified for them in the order they are specified (if there are any)
    * if `nodelete` is false removes those that haven't been found
    * if `nodelete` is true (default)
      * prints a warning for each unknown table, but doesn't touch them (as they may contain valuable data)
-     * sets unknown fields to `NULL` (so that they may contain NULL values)
+     * sets unknown columns to `NULL` (so that they may contain NULL values)
      * deletes all unknown indices (as they don't affect the data itself)
-     You can nevertheless set the `delete` attribute to true for fields and tables you want to delete explicitly.
+     You can nevertheless set the `delete` attribute to true for columns and tables you want to delete explicitly.
 
 schemaInject...
  * won't do anything unless it can read all of the specified schema files
@@ -66,22 +66,22 @@ Example schema
 		<sequence name="seq_foo" start="10" interval="1" delete="false" />
 		<!-- Then the tables -->
 		<table name="user">
-			<field name="uid" type="integer" sequence="seq_user_uid" null="false" />
-			<field name="login" type="varchar[50]" null="false" />
-			<field name="password" type="char[32]" null="false">
+			<column name="uid" type="integer" sequence="seq_user_uid" null="false" />
+			<column name="login" type="varchar[50]" null="false" />
+			<column name="password" type="char[32]" null="false">
 				<oldname>pwd</oldname>
-			</field>
+			</column>
 
-			<pkey field="uid" />
+			<pkey column="uid" />
 		</table>
 		<table name="session" comment="Session table">
-			<field name="sid" type="char[32]" null="false" />
-			<field name="uid" type="integer" null="false" />
-			<field name="lastActive" type="timestamp" null="false" default="%NOW%" />
-			<field name="deletedField" delete="true" />
+			<column name="sid" type="char[32]" null="false" />
+			<column name="uid" type="integer" null="false" />
+			<column name="lastActive" type="timestamp" null="false" default="%NOW%" />
+			<column name="deletedColumn" delete="true" />
 
-			<pkey field="sid" type="" />
-			<fkey field="uid" refTable="user" refField="uid" />
+			<pkey column="sid" type="" />
+			<fkey column="uid" toTable="user" toColumn="uid" />
 		</table>
 		<table name="foo" ignore="true" />
 		<table name="deleteMe" delete="true" />
@@ -112,25 +112,25 @@ Example schema
      * `ignore`: set this to true to completely ignore a table (use this for external tables)
      * `delete`: completely remove the table and its content
 
-     It can contain `<field>`, `<pkey>`, `<fkey>` and `<unique>` elements.
-   * The `<field>` element as the following attributes:
-     * `name` (required): the name of the field
-     * `type` (required if none of `ignore` and `delete` are specified): field type
-     * `null` (default: `false`): Specifies wheter the field accepts NULL values
-     * `sequence` (default: ""): Use a sequence on this field. Sequences are created implicitly
-     * `ignore` (default: `false`): Completely ignores the field
-     * `delete` (default: `false`): Deletes the field
+     It can contain `<column>`, `<pkey>`, `<fkey>` and `<unique>` elements.
+   * The `<column>` element as the following attributes:
+     * `name` (required): the name of the column
+     * `type` (required if none of `ignore` and `delete` are specified): column type
+     * `null` (default: `false`): Specifies wheter the column accepts NULL values
+     * `sequence` (default: ""): Use a sequence on this column. Sequences are created implicitly
+     * `ignore` (default: `false`): Completely ignores the column
+     * `delete` (default: `false`): Deletes the column
    * The `<pkey>` element specifies the table's primary key.
 
-     It is either empty and has one `field` attribute or contains several
-     `<field>fieldName</field>` subelements (for pkeys over more than one field)
+     It is either empty and has one `column` attribute or contains several
+     `<column>columnName</column>` subelements (for pkeys over more than one column)
    * The `<unique>` element creates a unique constraint.
-     It is either empty and has one `field` attribute or contains several
-     `<field>fieldName</field>` subelements (for unique indexes over more than
-     one field)
-   * The `<fkey>` element always has a `refTable` attribute and either a
-     `field` and `refField` for single-field fkeys or several
-     `<field name="localFieldName" refField="remoteFieldName" />` subelements.
+     It is either empty and has one `column` attribute or contains several
+     `<column>columnName</column>` subelements (for unique indexes over more than
+     one column)
+   * The `<fkey>` element always has a `toTable` attribute and either a
+     `column` and `toColumn` for single-column fkeys or several
+     `<column name="localColumnName" toColumn="remoteColumnName" />` subelements.
 
      It may contain the following additional attributes:
      * `deferred` (default: "false"), other values: "deferred", "immediate" )
