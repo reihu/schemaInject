@@ -53,12 +53,7 @@ public class DatabaseHelper {
 			Integer fraction = rs.getInt("DECIMAL_DIGITS");
 			String defaultValue = rs.getString("COLUMN_DEF");
 			int nullable = rs.getInt("NULLABLE");
-			
-			if (dimension > 0) {
-				type = type+'('+dimension+')';
-			}
-			type = type.toLowerCase();
-			
+
 			rc.add(new Column(null, name, new Datatype(type, dimension, fraction), nullable == DatabaseMetaData.columnNullable, defaultValue));
 		}
 

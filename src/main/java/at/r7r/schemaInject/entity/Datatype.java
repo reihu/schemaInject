@@ -1,28 +1,33 @@
 package at.r7r.schemaInject.entity;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class Datatype {
 	// lowercase type name
-	private String mTypeName;
-	private Integer mDimension;
-	private Integer mFraction;
+	private String mTypeName = null;
+	private Integer mDimension = null;
+	private Integer mFraction = null;
 	
 	public Datatype(String type) {
-		Pattern p = Pattern.compile("^([a-z]*)(\\(([0-9]*)(,([0-9]*))?\\))?");
-		Matcher m = p.matcher(type.toLowerCase());
-
-		mTypeName = m.group(1);
-		String precision = m.group(3), fraction = m.group(4);
-		mDimension = precision != null ? Integer.parseInt(precision) : null;
-		mFraction = fraction != null ? Integer.parseInt(fraction) : null;
+		type = type.trim().toLowerCase();
+		int bracketIndex = type.indexOf('(');
+		if (bracketIndex > -1 && type.endsWith(")")) {
+			mTypeName = type.substring(0, bracketIndex);
+			type = type.substring(bracketIndex+1, type.length()-1);
+			int commaPos = type.indexOf(',');
+			if (commaPos > -1) {
+				mDimension = Integer.parseInt(type.substring(0, commaPos));
+				mFraction = Integer.parseInt(type.substring(commaPos+1));
+			}
+			else mDimension = Integer.parseInt(type);
+		}
+		else {
+			mTypeName = type;
+		}
 	}
 	
 	public Datatype(String typeName, Integer dimension, Integer fraction) {
-		mTypeName = typeName;
-		mDimension = dimension;
-		mFraction = fraction;
+		mTypeName = typeName.toLowerCase();
+		mDimension = dimension > 0 ? dimension : null;
+		mFraction = fraction > 0 ? fraction : null;
 	}
 	
 	@Override
