@@ -158,7 +158,7 @@ public abstract class Entity<ParentType extends Entity<?>> {
 			}
 		}
 		else if (thisValue instanceof Map<?,?>) {
-			throw new UnsupportedOperationException("Mäh");
+			throw new UnsupportedOperationException("Maps can't be compared right now");
 		}
 		else rc = thisValue.equals(otherValue);
 		
@@ -237,9 +237,9 @@ public abstract class Entity<ParentType extends Entity<?>> {
 		
 		return getClass().getSimpleName()+" "+hier;
 	}
-
+ 
 	static <T extends Entity<?>> T getItemByName(List<T> list, String name) {
-		return getItemByName(list, name);
+		return (T) getListItemByName(list, name);
 	}
 	
 	protected static Entity<?> getListItemByName(Collection<?> list, String name) {
