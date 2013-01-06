@@ -10,7 +10,7 @@ import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
  * @author Manuel Reithuber
  */
 @XStreamAlias("field")
-public class Field extends Entity<Table> {
+public class Column extends Entity<Table> {
 	@XStreamAsAttribute
 	private String type;
 	@XStreamAsAttribute
@@ -21,7 +21,7 @@ public class Field extends Entity<Table> {
 	@XStreamAlias("default")
 	private String defaultValue;
 	
-	public Field(Table parent, String name, String type, boolean nullable, String defaultValue) {
+	public Column(Table parent, String name, String type, boolean nullable, String defaultValue) {
 		super(parent, name);
 		this.type = type;
 		this.nullable = nullable;

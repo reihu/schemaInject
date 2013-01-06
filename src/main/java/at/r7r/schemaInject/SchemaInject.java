@@ -17,17 +17,17 @@ import com.thoughtworks.xstream.XStream;
 
 import at.r7r.schemaInject.dao.DatabaseHelper;
 import at.r7r.schemaInject.dao.SqlBuilder;
-import at.r7r.schemaInject.entity.Field;
+import at.r7r.schemaInject.entity.Column;
 import at.r7r.schemaInject.entity.PrimaryKey;
 import at.r7r.schemaInject.entity.Schema;
 import at.r7r.schemaInject.entity.Table;
 
 public class SchemaInject {
 	private static Table createMetaTable(String tableName) {
-		List<Field> fields = new ArrayList<Field>();
+		List<Column> fields = new ArrayList<Column>();
 		List<String> pkeyFields = new LinkedList<String>();
-		fields.add(new Field(null, "revision", "INTEGER", false, null));
-		fields.add(new Field(null, "ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
+		fields.add(new Column(null, "revision", "INTEGER", false, null));
+		fields.add(new Column(null, "ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
 		pkeyFields.add("revision");
 		
 		PrimaryKey pkey = new PrimaryKey(null, tableName+"_pkey", pkeyFields);

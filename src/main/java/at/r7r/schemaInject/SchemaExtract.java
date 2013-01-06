@@ -11,7 +11,7 @@ import com.thoughtworks.xstream.XStream;
 
 import at.r7r.schemaInject.dao.DatabaseHelper;
 import at.r7r.schemaInject.dao.SqlBuilder;
-import at.r7r.schemaInject.entity.Field;
+import at.r7r.schemaInject.entity.Column;
 import at.r7r.schemaInject.entity.ForeignKey;
 import at.r7r.schemaInject.entity.PrimaryKey;
 import at.r7r.schemaInject.entity.Schema;
@@ -63,7 +63,7 @@ public class SchemaExtract {
 
 	private Table getTable(Schema schema, String name) throws SQLException {
 		DatabaseHelper db = new DatabaseHelper(conn);
-		List<Field> fields = db.getFields(name);
+		List<Column> fields = db.getFields(name);
 		PrimaryKey pkey = db.getPrimaryKey(name);
 		List<ForeignKey> fkeys = db.getForeignKeys(name);
 		List<Unique> uniques = db.getUniqueConstraints(name);

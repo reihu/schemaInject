@@ -16,7 +16,7 @@ public class Table extends Entity<Schema> {
 	 * List of fields in this table
 	 */
 	@XStreamImplicit(itemFieldName="field")
-	private List<Field> fields = new ArrayList<Field>();
+	private List<Column> fields = new ArrayList<Column>();
 
 	/**
 	 * Primary key
@@ -36,7 +36,7 @@ public class Table extends Entity<Schema> {
 	@XStreamImplicit(itemFieldName="unique")
 	private List<Unique> uniques = new ArrayList<Unique>();
 
-	public Table(Schema parent, String name, List<Field> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
+	public Table(Schema parent, String name, List<Column> fields, PrimaryKey pkey, List<ForeignKey> fkeys, List<Unique> uniques) {
 		super(parent, name);
 		this.fields = fields;
 		this.primaryKey = pkey;
@@ -68,7 +68,7 @@ public class Table extends Entity<Schema> {
 	 * Return all the table's fields
 	 * @return Fields (sometimes referred to as columns)
 	 */
-	public List<Field> getFields() {
+	public List<Column> getFields() {
 		return fields;
 	}
 	
@@ -99,7 +99,7 @@ public class Table extends Entity<Schema> {
 	}
 	
 	public void polish() {
-		for (Field field: getFields()) {
+		for (Column field: getFields()) {
 			field.setParent(this);
 			field.polish();
 		}

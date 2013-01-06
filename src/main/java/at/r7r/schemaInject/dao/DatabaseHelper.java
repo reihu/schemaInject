@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import at.r7r.schemaInject.entity.Field;
+import at.r7r.schemaInject.entity.Column;
 import at.r7r.schemaInject.entity.ForeignKey;
 import at.r7r.schemaInject.entity.Index;
 import at.r7r.schemaInject.entity.PrimaryKey;
@@ -40,16 +40,16 @@ public class DatabaseHelper {
 		stmt.execute();
 	}
 
-	public List<Field> getFields(String tableName) throws SQLException {
+	public List<Column> getFields(String tableName) throws SQLException {
 		ResultSet rs = conn.getMetaData().getColumns(null, null, tableName, "%");
-		List<Field> rc = new ArrayList<Field>();
+		List<Column> rc = new ArrayList<Column>();
 
 		while (rs.next()) {
 			String name = rs.getString(4);
 			String type = rs.getString(6);
 			String defaultValue = rs.getString(13);
 			int nullable = rs.getInt(11);
-			rc.add(new Field(null, name, type, nullable == DatabaseMetaData.columnNullable, defaultValue));
+			rc.add(new Column(null, name, type, nullable == DatabaseMetaData.columnNullable, defaultValue));
 		}
 
 		return rc;

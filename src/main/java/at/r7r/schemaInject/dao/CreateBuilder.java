@@ -1,6 +1,6 @@
 package at.r7r.schemaInject.dao;
 
-import at.r7r.schemaInject.entity.Field;
+import at.r7r.schemaInject.entity.Column;
 import at.r7r.schemaInject.entity.ForeignKey;
 import at.r7r.schemaInject.entity.PrimaryKey;
 import at.r7r.schemaInject.entity.Table;
@@ -10,7 +10,7 @@ import at.r7r.schemaInject.entity.Unique;
  * Class that builds SQL 
  */
 public class CreateBuilder {	
-	private SqlBuilder buildField(Field field) {
+	private SqlBuilder buildField(Column field) {
 		SqlBuilder rc = new SqlBuilder(" ", false);
 		rc.append("  \""+field.getName()+'"');
 		rc.append(field.getType());
@@ -78,7 +78,7 @@ public class CreateBuilder {
 		rc.append("(\n");
 		
 		SqlBuilder parts = new SqlBuilder(",", true);
-		for (Field field: table.getFields()) {
+		for (Column field: table.getFields()) {
 			parts.append(buildField(field));
 		}
 		if (table.getPrimaryKey() != null) {
