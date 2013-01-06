@@ -139,6 +139,12 @@ public class Schema extends Entity<Schema> {
 			table.setParent(this);
 			table.polish();
 		}
+		
+		Table metaTable = getTable(getMetaTable()); 
+		if (metaTable != null) {
+			// remove meta table from schema
+			getTables().remove(metaTable);
+		}
 	}
 	
 	static boolean listsEqual(List<? extends Entity<?>> a, List<? extends Entity<?>> b) {
