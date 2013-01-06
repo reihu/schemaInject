@@ -18,16 +18,18 @@ import com.thoughtworks.xstream.XStream;
 import at.r7r.schemaInject.dao.DatabaseHelper;
 import at.r7r.schemaInject.dao.SqlBuilder;
 import at.r7r.schemaInject.entity.Column;
+import at.r7r.schemaInject.entity.Datatype;
 import at.r7r.schemaInject.entity.PrimaryKey;
 import at.r7r.schemaInject.entity.Schema;
 import at.r7r.schemaInject.entity.Table;
+import at.r7r.schemaInject.xstreamConverter.DatatypeConverter;
 
 public class SchemaInject {
 	private static Table createMetaTable(String tableName) {
 		List<Column> columns = new ArrayList<Column>();
 		List<String> pkeyColumns = new LinkedList<String>();
-		columns.add(new Column(null, "revision", "INTEGER", false, null));
-		columns.add(new Column(null, "ts", "TIMESTAMP", false, null)); // not using a default value here as this is db-specific
+		columns.add(new Column(null, "revision", new Datatype("INTEGER"), false, null));
+		columns.add(new Column(null, "ts", new Datatype("TIMESTAMP"), false, null)); // not using a default value here as this is db-specific
 		pkeyColumns.add("revision");
 		
 		PrimaryKey pkey = new PrimaryKey(null, tableName+"_pkey", pkeyColumns);
@@ -36,6 +38,7 @@ public class SchemaInject {
 	
 	static XStream getXStream() {
 		XStream xstream = new XStream();
+		xstream.registerConverter(new DatatypeConverter());
 		xstream.processAnnotations(Schema.class);
 		return xstream;
 	}

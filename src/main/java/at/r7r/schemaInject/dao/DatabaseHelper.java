@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import at.r7r.schemaInject.entity.Column;
+import at.r7r.schemaInject.entity.Datatype;
 import at.r7r.schemaInject.entity.ForeignKey;
 import at.r7r.schemaInject.entity.Index;
 import at.r7r.schemaInject.entity.PrimaryKey;
@@ -29,15 +30,16 @@ public class DatabaseHelper {
 	public DatabaseHelper (Connection connection) {
 		conn = connection;
 	}
-
-	public boolean compareTypes(String firstType, String secondType) {
-		return firstType.equalsIgnoreCase(secondType);
-	}
 	
 	public void createTable(Table table) throws SQLException {
 		String sql = new CreateBuilder().buildTable(table).join();
-		PreparedStatement stmt = conn.prepareStatement(sql);
-		stmt.execute();
+		try {
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.execute();
+		}
+		catch (SQLException e) {
+			throw new SQLException("Error in SQL statement '"+sql+"'\n"+e.getMessage(), e);
+		}
 	}
 
 	public List<Column> getColumns(String tableName) throws SQLException {
@@ -45,11 +47,19 @@ public class DatabaseHelper {
 		List<Column> rc = new ArrayList<Column>();
 
 		while (rs.next()) {
-			String name = rs.getString(4);
-			String type = rs.getString(6);
-			String defaultValue = rs.getString(13);
-			int nullable = rs.getInt(11);
-			rc.add(new Column(null, name, type, nullable == DatabaseMetaData.columnNullable, defaultValue));
+			String name = rs.getString("COLUMN_NAME");
+			String type = rs.getString("TYPE_NAME");
+			Integer dimension = rs.getInt("COLUMN_SIZE");
+			Integer fraction = rs.getInt("DECIMAL_DIGITS");
+			String defaultValue = rs.getString("COLUMN_DEF");
+			int nullable = rs.getInt("NULLABLE");
+			
+			if (dimension > 0) {
+				type = type+'('+dimension+')';
+			}
+			type = type.toLowerCase();
+			
+			rc.add(new Column(null, name, new Datatype(type, dimension, fraction), nullable == DatabaseMetaData.columnNullable, defaultValue));
 		}
 
 		return rc;

@@ -13,7 +13,7 @@ public class CreateBuilder {
 	private SqlBuilder buildColumn(Column column) {
 		SqlBuilder rc = new SqlBuilder(" ", false);
 		rc.append("  \""+column.getName()+'"');
-		rc.append(column.getType());
+		rc.append(column.getType().toString());
 		if (!column.isNullable()) rc.append("NOT");
 		rc.append("NULL");
 		if (column.getSequence() != null) {
